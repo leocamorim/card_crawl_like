@@ -23,6 +23,7 @@ func _process(delta):
 func _on_Card_input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton:
 		if event.is_pressed() and canMove:
+			print("dragged")
 			safePosition = global_position
 			dragMouse = true
 			Master.isDragin = true
@@ -32,59 +33,52 @@ func _on_Card_input_event(viewport, event, shape_idx):
 			onRelease()
 
 func onRelease():
-	if not inHand:
-		if collidingGroup == Master.colliderTypes.player:
-			if stats.type == Master.cardTypes.monster:
-				dealer.monsterAttackPlayer(self)
-			else:
-				set_global_position(safePosition)
-		elif collidingGroup == Master.colliderTypes.rightHand or collidingGroup == Master.colliderTypes.leftHand:
-			if stats.type != Master.cardTypes.monster and dealer.get_node(collidingGroup).free == true:
-				if(inBag):
-					self.get_parent().free = true
-					inBag = false
-				inHand = true
-				call_deferred("reparent", dealer.get_node(collidingGroup))
-				dealer.get_node(collidingGroup).stats = stats
-				dealer.get_node(collidingGroup).free = false
-				if stats.type == Master.cardTypes.potion:
-					dealer.usePotionItem(self)
-				if stats.type == Master.cardTypes.coin:
-					print("b@*$# better have my money!")
-					dealer.useCoinItem(self)
-			else:
-				set_global_position(safePosition)
-		elif not inBag:
-			if collidingGroup == Master.colliderTypes.bag:
-				if stats.type != Master.cardTypes.monster and dealer.get_node(collidingGroup).free == true:
-					inBag = true
-					call_deferred("reparent", dealer.get_node(collidingGroup))
-					dealer.get_node(collidingGroup).stats = stats
-					dealer.get_node(collidingGroup).free = false
-					if stats.type == Master.cardTypes.coin:
-						print("b@*$# better have my money!")
-						dealer.useCoinItem(self)
-				else:
-					set_global_position(safePosition)
-			elif collidingGroup == Master.colliderTypes.sellCard:
-				if(stats.type != Master.cardTypes.monster):
-					print("Selling card!")
-					dealer.sellCard(self)
-				else:
-					set_global_position(safePosition)
-			elif stats.type == Master.cardTypes.monster and colliding.inHand and (colliding.stats.type == Master.cardTypes.sword or colliding.stats.type == Master.cardTypes.shield):
-				dealer.useBattleItem(colliding, self)
-			else:
-				set_global_position(safePosition)
-		else:
-			set_global_position(safePosition)
+	get_tree().call_group("card", "mouseReleased", self)
+	get_tree().call_group("player", "mouseReleased", self)
+	get_tree().call_group("hand", "mouseReleased", self)
+	get_tree().call_group("bag", "mouseReleased", self)
+	get_tree().call_group("sellCard", "mouseReleased", self)
+	pass
+
+func mouseReleased(dragging):
+	if dragging != self:
+		var width = $img.texture.get_width() * transform.get_scale().x
+		var height = $img.texture.get_height() * transform.get_scale().y
+		if get_viewport().get_mouse_position().x > global_position.x - width/2 and get_viewport().get_mouse_position().x < global_position.x + width/2 and get_viewport().get_mouse_position().y > global_position.y - height/2 and get_viewport().get_mouse_position().y < global_position.y + height/2:
+			if stats.type == Master.cardTypes.monster and dragging.stats.type == Master.cardTypes.sword:
+				print("attacking monster")
+				swordOnMonster(dragging)
+				pass
+			if stats.type == Master.cardTypes.shield and dragging.stats.type == Master.cardTypes.monster:
+				print("monster attacking shield")
+				monsterOnShield(dragging)
+				pass
 	else:
-		if collidingGroup == Master.colliderTypes.card:
-			if stats.type != Master.cardTypes.monster:
-				if (stats.type == Master.cardTypes.sword or stats.type == Master.cardTypes.shield) and colliding.stats.type == Master.cardTypes.monster:
-					dealer.useBattleItem(self, colliding)
 		set_global_position(safePosition)
-	dealer.tableSetup()
+
+func useOnPlayer():
+	if stats.type == Master.cardTypes.monster:
+		dealer.monsterAttackPlayer(self)
+	else:
+		set_global_position(safePosition)
+
+func swordOnMonster(_sword, _monster = self):
+	_monster.stats.value -= _sword.stats.value
+	_sword.stats.value = 0
+	if _monster.stats.value <= 0:
+		dealer.checkBeforeDestroy(_monster)
+	dealer.checkBeforeDestroy(_sword)
+
+func monsterOnShield(_monster, _shield = self):
+	if _monster.stats.value > _shield.stats.value:
+		dealer.obj_player.stats.life -= _monster.stats.value - _shield.stats.value
+		_shield.stats.value = 0
+	elif _shield.stats.value >= _monster.stats.value:
+		_shield.stats.value -= _monster.stats.value
+	_monster.stats.value = 0
+	dealer.removeFromTable(_monster)
+	dealer.checkBeforeDestroy(_shield)
+	pass
 
 func reparent(new_parent):
 	dealer.table.remove(dealer.table.find(self.stats))
@@ -103,24 +97,3 @@ func statsChanged(_newStats):
 		$value.text = str(stats.life) + "/" + str(stats.maxLife)
 		$name.text = stats.name
 		$img.texture = load("res://Assets/Sprites/hero.png")
-
-func _on_Card_area_entered(area):
-	colliding = area
-	if area.is_in_group("player"):
-		collidingGroup = Master.colliderTypes.player
-	elif area.is_in_group("hand"):
-		collidingGroup = Master.colliderTypes[area.name]
-	elif area.is_in_group("bag"):
-		collidingGroup = Master.colliderTypes.bag
-	elif area.is_in_group("card"):
-		collidingGroup = Master.colliderTypes.card
-	elif area.is_in_group("sellCard"):
-		collidingGroup = Master.colliderTypes.sellCard
-	else:
-		collidingGroup = Master.getTypeName(area.stats.type)
-	pass
-
-func _on_Card_area_exited(area):
-#	if (collidingGroup == Master.colliderTypes.player and area.is_in_group("player")) or ((collidingGroup == Master.colliderTypes.leftHand or collidingGroup == Master.colliderTypes.rightHand) and area.is_in_group("hand")):
-	colliding == null
-	pass

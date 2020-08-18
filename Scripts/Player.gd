@@ -11,5 +11,10 @@ func statsChanged(_newStats):
 	$name.text = stats.name
 	$img.texture = load("res://Assets/Sprites/hero.png")
 
-func _on_Card_input_event(viewport, event, shape_idx):
-	pass
+func mouseReleased(using):
+	print("mouseReleased")
+	var width = $img.texture.get_width() * transform.get_scale().x
+	var height = $img.texture.get_height() * transform.get_scale().y
+	if get_viewport().get_mouse_position().x > global_position.x - width/2 and get_viewport().get_mouse_position().x < global_position.x + width/2 and get_viewport().get_mouse_position().y > global_position.y - height/2 and get_viewport().get_mouse_position().y < global_position.y + height/2:
+		print("ON THE PLAYER")
+		using.useOnPlayer()

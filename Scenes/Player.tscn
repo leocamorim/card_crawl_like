@@ -59,4 +59,3 @@ autowrap = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 3 )
-[connection signal="input_event" from="." to="." method="_on_Card_input_event"]
