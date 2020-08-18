@@ -9,6 +9,9 @@ var obj_player
 var isPalying = true
 var winCondition = false
 
+var minDifficultyCoeficient = 13
+var maxDifficultyCoeficient = 13
+
 onready var pre_card = preload("res://Scenes/Card.tscn")
 onready var pre_player = preload("res://Scenes/Player.tscn")
 
@@ -23,7 +26,7 @@ func _process(delta):
 	if obj_player.stats.life <= 0 and isPalying:
 #		isPalying = false
 #		Master.playAudio("defeat.ogg")
-		Master.moveToScene("Menu")
+		Master.moveToScene("DefeatScreen")
 	checkTable()
 	var aux = Engine.get_frames_per_second()
 	if aux != 60:
@@ -53,8 +56,11 @@ func checkTable():
 		while(deck.deckList.size() > 0 and table.size() < 4):
 			draw()
 	elif table.size() <= 0:
-		print("YOU WIN")
-		Master.moveToScene("Menu")
+		if obj_player.stats.life > 0:
+			print("YOU WIN")
+			Master.moveToScene("WinScreen")
+		else:
+			Master.moveToScene("DefeatScreen")
 
 func clearTable():
 	for card in $bag.get_children():
@@ -156,21 +162,21 @@ func usePotionItem(item):
 	if obj_player.stats.life > obj_player.stats.maxLife:
 		obj_player.stats.life = obj_player.stats.maxLife
 	item.stats.value = 0
-	removeFromTable(item)
+#	removeFromTable(item)
 
 func useCoinItem(item):
 	Master.coins += item.stats.value
 	item.stats.value = 0
-	removeFromTable(item)
+#	removeFromTable(item)
 	print("Total Coins: "+str(Master.coins))
 
-func checkBeforeDestroy(card, force = false):
-	if(card.stats.value <= 0):
-		if card.inHand or card.inBag:
+func checkBeforeDestroy(card, clear = false):
+	if card.stats.value <= 0:
+		if  card.inHand or card.inBag:
 			card.get_parent().free = true
 		elif card.stats.type == Master.cardTypes.monster:
 			removeFromTable(card)
-		if force or (card.stats.type != Master.cardTypes.monster and card.stats.type != Master.cardTypes.coin and card.stats.type != Master.cardTypes.potion):
+		if clear or (card.stats.type != Master.cardTypes.monster and card.stats.type != Master.cardTypes.coin and card.stats.type != Master.cardTypes.potion):
 			card.get_parent().remove_child(card)
 
 func removeFromTable(card, sell = false):

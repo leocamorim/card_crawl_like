@@ -15,10 +15,9 @@ _global_script_class_icons={
 
 [application]
 
-config/name="Definetely Not Card Crawl"
+config/name="Card Souls"
 run/main_scene="res://Scenes/Menu.tscn"
-boot_splash/image="res://Assets/Sprites/heroi-13.png"
-boot_splash/fullsize=false
+boot_splash/image="res://Assets/Hud/tela-de-inicio.png"
 boot_splash/bg_color=Color( 1, 1, 1, 1 )
 config/icon="res://icon.png"
 
@@ -38,7 +37,7 @@ window/size/test_width=450
 window/size/test_height=800
 window/handheld/orientation="sensor_portrait"
 window/stretch/mode="viewport"
-window/stretch/aspect="keep_width"
+window/stretch/aspect="keep"
 
 [input_devices]
 
