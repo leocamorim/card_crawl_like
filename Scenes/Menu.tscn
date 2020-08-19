@@ -1,9 +1,9 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
-[ext_resource path="res://Scripts/Menu.gd" type="Script" id=1]
 [ext_resource path="res://Assets/Hud/tela-de-inicio.png" type="Texture" id=2]
-[ext_resource path="res://Assets/Hud/button.png" type="Texture" id=3]
 [ext_resource path="res://Assets/Fonts/gutter/Gutter Regular.ttf" type="DynamicFontData" id=4]
+[ext_resource path="res://Assets/Hud/buttonUp.png" type="Texture" id=5]
+[ext_resource path="res://Assets/Hud/buttonDown.png" type="Texture" id=6]
 
 [sub_resource type="DynamicFont" id=1]
 size = 60
@@ -17,8 +17,31 @@ font_data = ExtResource( 4 )
 size = 60
 font_data = ExtResource( 4 )
 
+[sub_resource type="GDScript" id=4]
+script/source = "extends Node
+
+func _on_bt_start_pressed():
+	get_parent().get_node(\"BtStart/Label\").rect_position.y += 30
+
+func _on_bt_config_pressed():
+	get_parent().get_node(\"BtConfig/Label\").rect_position.y += 30
+
+func _on_bt_desc_pressed():
+	get_parent().get_node(\"BtDesc/Label\").rect_position.y += 30
+
+func _on_bt_start_released():
+	get_parent().get_node(\"BtStart/Label\").rect_position.y -= 30
+	Master.moveToScene(\"InGame\")
+
+func _on_bt_config_released():
+	get_parent().get_node(\"BtConfig/Label\").rect_position.y -= 30
+	Master.moveToScene(\"Settings\")
+
+func _on_bt_desc_released():
+	get_parent().get_node(\"BtDesc/Label\").rect_position.y -= 30
+"
+
 [node name="Menu" type="Node2D"]
-script = ExtResource( 1 )
 __meta__ = {
 "_edit_vertical_guides_": [ -540.0 ]
 }
@@ -33,13 +56,14 @@ position = Vector2( 270, 880 )
 [node name="bt_start" type="TouchScreenButton" parent="BtStart"]
 position = Vector2( 51, 0 )
 scale = Vector2( 0.8, 0.8 )
-normal = ExtResource( 3 )
+normal = ExtResource( 5 )
+pressed = ExtResource( 6 )
 
 [node name="Label" type="Label" parent="BtStart"]
-margin_left = 51.0
-margin_top = 30.0
-margin_right = 470.0
-margin_bottom = 120.0
+margin_left = 64.0
+margin_top = 13.0
+margin_right = 446.0
+margin_bottom = 122.0
 custom_fonts/font = SubResource( 1 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "Start"
@@ -56,19 +80,23 @@ position = Vector2( 270, 1090 )
 [node name="bt_config" type="TouchScreenButton" parent="BtConfig"]
 position = Vector2( 51, 0 )
 scale = Vector2( 0.8, 0.8 )
-normal = ExtResource( 3 )
+normal = ExtResource( 5 )
+pressed = ExtResource( 6 )
 
 [node name="Label" type="Label" parent="BtConfig"]
-margin_left = 51.0
-margin_top = 30.0
-margin_right = 470.0
-margin_bottom = 120.0
+margin_left = 64.0
+margin_top = 13.0
+margin_right = 446.0
+margin_bottom = 122.0
 custom_fonts/font = SubResource( 2 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "settings"
 align = 1
 valign = 1
 uppercase = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="BtDesc" type="Node2D" parent="."]
 position = Vector2( 270, 1300 )
@@ -76,19 +104,26 @@ position = Vector2( 270, 1300 )
 [node name="bt_desc" type="TouchScreenButton" parent="BtDesc"]
 position = Vector2( 51, 0 )
 scale = Vector2( 0.8, 0.8 )
-normal = ExtResource( 3 )
+normal = ExtResource( 5 )
+pressed = ExtResource( 6 )
 
 [node name="Label" type="Label" parent="BtDesc"]
-margin_left = 50.0
-margin_top = 30.0
-margin_right = 470.0
-margin_bottom = 120.0
+margin_left = 64.0
+margin_top = 13.0
+margin_right = 446.0
+margin_bottom = 122.0
 custom_fonts/font = SubResource( 3 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "CREDITS"
 align = 1
 valign = 1
 uppercase = true
-[connection signal="released" from="BtStart/bt_start" to="." method="_on_bt_start_released"]
-[connection signal="released" from="BtConfig/bt_config" to="." method="_on_bt_config_released"]
-[connection signal="released" from="BtDesc/bt_desc" to="." method="_on_bt_desc_released"]
+
+[node name="EventHandler" type="Node" parent="."]
+script = SubResource( 4 )
+[connection signal="pressed" from="BtStart/bt_start" to="EventHandler" method="_on_bt_start_pressed"]
+[connection signal="released" from="BtStart/bt_start" to="EventHandler" method="_on_bt_start_released"]
+[connection signal="pressed" from="BtConfig/bt_config" to="EventHandler" method="_on_bt_config_pressed"]
+[connection signal="released" from="BtConfig/bt_config" to="EventHandler" method="_on_bt_config_released"]
+[connection signal="pressed" from="BtDesc/bt_desc" to="EventHandler" method="_on_bt_desc_pressed"]
+[connection signal="released" from="BtDesc/bt_desc" to="EventHandler" method="_on_bt_desc_released"]

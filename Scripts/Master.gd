@@ -25,9 +25,6 @@ var bgm = true
 var isDragin = false
 var coins = 0
 
-#func _process(delta):
-#	pass
-
 func moveToScene(sceneName):
 	get_tree().change_scene("res://Scenes/"+sceneName+".tscn")
 

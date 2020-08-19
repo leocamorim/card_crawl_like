@@ -24,31 +24,94 @@ func _ready():
 
 func _process(delta):
 	if obj_player.stats.life <= 0 and isPalying:
-#		isPalying = false
-#		Master.playAudio("defeat.ogg")
+		isPalying = false
+		Master.playAudio("defeat.ogg")
 		Master.moveToScene("DefeatScreen")
 	checkTable()
-	var aux = Engine.get_frames_per_second()
-	if aux != 60:
-		print(aux)
+#	var aux = Engine.get_frames_per_second()
+#	if aux != 60:
+#		print(aux)
 
 func draw():
-	print("draw new card")
+#	print("draw new card")
 	if table.size() < 4 and deck.deckList.size() > 0:
 		var drawingCard = deck.deckList.front()
-		table.append(drawingCard)
-		var new_card = pre_card.instance()
-		new_card.canMove = true
-		new_card.stats = drawingCard
-		var _childCounter = 0
-		for slot in $table.get_children():
-			if slot.get_child_count() == 0:
-				print("PARENT")
-				print(new_card.get_parent())
-				slot.add_child(new_card)
-				_childCounter = $table.get_child_count()
-		deck.deckList.pop_front()
-		updateLabel()
+		var tableTable = {
+			sword = 0,
+			shield = 0,
+			potion = 0,
+			coin = 0,
+			monster = 0,
+			special = 0,
+			hero = 0,
+		}
+		if table.size() > 0:
+			for card in table:
+				if card.type == 1:
+					tableTable.sword += 1
+				if card.type == 2:
+					tableTable.shield += 1
+				if card.type == 3:
+					tableTable.potion += 1
+				if card.type == 4:
+					tableTable.coin += 1
+				if card.type == 5:
+					tableTable.monster += 1
+				if card.type == 6:
+					tableTable.special += 1
+				if card.type == 7:
+					tableTable.hero += 1
+		print(tableTable)
+
+		if ((drawingCard.type == Master.cardTypes.sword and tableTable.sword < 2) or deckHasOnly("sword")) or ((drawingCard.type == Master.cardTypes.shield and tableTable.shield < 2) or deckHasOnly("shield")) or ((drawingCard.type == Master.cardTypes.potion and tableTable.potion < 2) or deckHasOnly("potion")) or ((drawingCard.type == Master.cardTypes.coin and tableTable.coin < 2) or deckHasOnly("coin")) or ((drawingCard.type == Master.cardTypes.monster and tableTable.monster < 2) or deckHasOnly("monster")) or ((drawingCard.type == Master.cardTypes.special and tableTable.special < 2) or deckHasOnly("special")) or ((drawingCard.type == Master.cardTypes.hero and tableTable.hero < 2) or deckHasOnly("hero")):
+			table.append(drawingCard)
+			var new_card = pre_card.instance()
+			new_card.canMove = true
+			new_card.stats = drawingCard
+			var _childCounter = 0
+			for slot in $table.get_children():
+				if slot.get_child_count() == 0:
+					slot.add_child(new_card)
+					_childCounter = $table.get_child_count()
+			deck.deckList.pop_front()
+			updateLabel()
+		else:
+			shuffleDeck()
+			draw()
+
+func deckHasOnly(_type):
+	for card in deck.deckList:
+		if card.type != Master.cardTypes[_type]:
+			return false
+	return true
+
+func deckHasAllTypes():
+	var tableTable = {
+		sword = 0,
+		shield = 0,
+		potion = 0,
+		coin = 0,
+		monster = 0,
+		special = 0,
+		hero = 0,
+	}
+	for card in deck.deckList:
+		if card.type == 1:
+			tableTable.sword += 1
+		if card.type == 2:
+			tableTable.shield += 1
+		if card.type == 3:
+			tableTable.potion += 1
+		if card.type == 4:
+			tableTable.coin += 1
+		if card.type == 5:
+			tableTable.monster += 1
+		if card.type == 6:
+			tableTable.special += 1
+		if card.type == 7:
+			tableTable.hero += 1
+	if tableTable.sword > 0 and tableTable.shield > 0 and tableTable.potion > 0 and tableTable.coin > 0 and tableTable.monster > 0 and tableTable.special > 0 and tableTable.hero > 0:
+		return true
 
 func checkTable():
 	if deck.deckList.size() > 0 and table.size() == 1:

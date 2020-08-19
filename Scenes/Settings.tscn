@@ -1,0 +1,181 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://Assets/Hud/white-bg.png" type="Texture" id=1]
+[ext_resource path="res://Assets/Hud/switchOn.png" type="Texture" id=2]
+[ext_resource path="res://Assets/Hud/buttonDown.png" type="Texture" id=3]
+[ext_resource path="res://Assets/Hud/buttonUp.png" type="Texture" id=4]
+[ext_resource path="res://Assets/Fonts/gutter/Gutter Regular.otf" type="DynamicFontData" id=5]
+
+[sub_resource type="DynamicFont" id=1]
+size = 150
+font_data = ExtResource( 5 )
+
+[sub_resource type="DynamicFont" id=4]
+size = 100
+font_data = ExtResource( 5 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 100
+font_data = ExtResource( 5 )
+
+[sub_resource type="GDScript" id=3]
+script/source = "extends Node
+
+onready var pre_switchOn = preload(\"res://Assets/Hud/switchOn.png\")
+onready var pre_switchOff = preload(\"res://Assets/Hud/switchOff.png\")
+
+func _ready():
+	updateSwitches()
+
+func _on_bgm_switch_released():
+	Master.bgm = !Master.bgm
+	updateSwitches()
+
+func _on_sfx_switch_released():
+	Master.sfx = !Master.sfx
+	updateSwitches()
+
+func updateSwitches():
+	if Master.bgm:
+		get_parent().get_node(\"bgm_switch\").normal = pre_switchOn
+	else:
+		get_parent().get_node(\"bgm_switch\").normal = pre_switchOff
+
+	if Master.sfx:
+		get_parent().get_node(\"sfx_switch\").normal = pre_switchOn
+	else:
+		get_parent().get_node(\"sfx_switch\").normal = pre_switchOff
+
+func _on_BtBack_pressed():
+	get_parent().get_node(\"BtBack/Label\").rect_position.y += 30
+
+func _on_BtBack_released():
+	Master.moveToScene(\"Menu\")
+"
+
+[node name="Settings" type="Node2D"]
+__meta__ = {
+"_edit_vertical_guides_": [ 540.0 ]
+}
+
+[node name="white-bg" type="Sprite" parent="."]
+texture = ExtResource( 1 )
+centered = false
+
+[node name="Title" type="Label" parent="."]
+margin_top = 110.998
+margin_right = 1080.0
+margin_bottom = 257.998
+custom_fonts/font = SubResource( 1 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "SETTINGS"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="bgm_switch" type="TouchScreenButton" parent="."]
+position = Vector2( 314, 509.425 )
+normal = ExtResource( 2 )
+
+[node name="Title" type="Label" parent="bgm_switch"]
+margin_left = 148.518
+margin_top = 181.465
+margin_right = 319.518
+margin_bottom = 279.465
+custom_fonts/font = SubResource( 4 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "BGM"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LabelOn" type="Label" parent="bgm_switch"]
+margin_left = 478.146
+margin_top = 37.6278
+margin_right = 593.146
+margin_bottom = 135.628
+custom_fonts/font = SubResource( 4 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "ON"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LabelOff" type="Label" parent="bgm_switch"]
+margin_left = -173.394
+margin_top = 37.6278
+margin_right = -25.3936
+margin_bottom = 135.628
+custom_fonts/font = SubResource( 4 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "off"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="sfx_switch" type="TouchScreenButton" parent="."]
+position = Vector2( 314, 964.91 )
+normal = ExtResource( 2 )
+
+[node name="Title" type="Label" parent="sfx_switch"]
+margin_left = 148.518
+margin_top = 181.465
+margin_right = 287.518
+margin_bottom = 279.465
+custom_fonts/font = SubResource( 4 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "SFX"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LabelOn" type="Label" parent="sfx_switch"]
+margin_left = 478.146
+margin_top = 37.628
+margin_right = 593.146
+margin_bottom = 135.628
+custom_fonts/font = SubResource( 4 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "ON"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LabelOff" type="Label" parent="sfx_switch"]
+margin_left = -173.394
+margin_top = 37.628
+margin_right = -25.3936
+margin_bottom = 135.628
+custom_fonts/font = SubResource( 4 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "off"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BtBack" type="TouchScreenButton" parent="."]
+position = Vector2( 286, 1510.29 )
+normal = ExtResource( 4 )
+pressed = ExtResource( 3 )
+
+[node name="Label" type="Label" parent="BtBack"]
+margin_left = 16.0
+margin_top = 14.0
+margin_right = 493.0
+margin_bottom = 142.0
+custom_fonts/font = SubResource( 2 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "BACK"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="EventHandler" type="Node" parent="."]
+script = SubResource( 3 )
+[connection signal="released" from="bgm_switch" to="EventHandler" method="_on_bgm_switch_released"]
+[connection signal="released" from="sfx_switch" to="EventHandler" method="_on_sfx_switch_released"]
+[connection signal="pressed" from="BtBack" to="EventHandler" method="_on_BtBack_pressed"]
+[connection signal="released" from="BtBack" to="EventHandler" method="_on_BtBack_released"]
