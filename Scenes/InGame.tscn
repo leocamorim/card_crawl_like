@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=37 format=2]
 
 [ext_resource path="res://Scripts/Dealer.gd" type="Script" id=1]
 [ext_resource path="res://Assets/Hud/campo-desenhado.png" type="Texture" id=2]
@@ -6,16 +6,57 @@
 [ext_resource path="res://Scripts/Hand.gd" type="Script" id=4]
 [ext_resource path="res://Scripts/Bag.gd" type="Script" id=5]
 [ext_resource path="res://Scripts/sellCard.gd" type="Script" id=6]
-
+[ext_resource path="res://Assets/Animation/damage/Camada 36.png" type="Texture" id=7]
+[ext_resource path="res://Assets/Animation/damage/Camada 40.png" type="Texture" id=8]
+[ext_resource path="res://Assets/Animation/damage/Camada 35.png" type="Texture" id=9]
+[ext_resource path="res://Assets/Animation/damage/Camada 39.png" type="Texture" id=10]
+[ext_resource path="res://Assets/Animation/damage/Camada 37.png" type="Texture" id=11]
+[ext_resource path="res://Assets/Animation/damage/Camada 38.png" type="Texture" id=12]
+[ext_resource path="res://Assets/Animation/damage/Camada 41.png" type="Texture" id=13]
+[ext_resource path="res://Assets/Animation/damage/Camada 34.png" type="Texture" id=14]
+[ext_resource path="res://Scripts/AnimationHandler.gd" type="Script" id=15]
+[ext_resource path="res://Assets/Animation/heal/Camada 43 copiar.png" type="Texture" id=16]
+[ext_resource path="res://Assets/Animation/heal/Camada 43 copiar 2.png" type="Texture" id=17]
+[ext_resource path="res://Assets/Animation/heal/Camada 43 copiar 3.png" type="Texture" id=18]
+[ext_resource path="res://Assets/Animation/heal/Camada 43 copiar 4.png" type="Texture" id=19]
+[ext_resource path="res://Assets/Animation/heal/Camada 43 copiar 5.png" type="Texture" id=20]
+[ext_resource path="res://Assets/Animation/heal/Camada 43.png" type="Texture" id=21]
+[ext_resource path="res://Assets/Animation/heal/Camada 43 copiar 11.png" type="Texture" id=22]
+[ext_resource path="res://Assets/Animation/heal/Camada 43 copiar 7.png" type="Texture" id=23]
+[ext_resource path="res://Assets/Animation/heal/Camada 43 copiar 9.png" type="Texture" id=24]
+[ext_resource path="res://Assets/Animation/heal/Camada 43 copiar 6.png" type="Texture" id=25]
+[ext_resource path="res://Assets/Animation/heal/Camada 43 copiar 10.png" type="Texture" id=26]
+[ext_resource path="res://Assets/Animation/heal/Camada 43 copiar 8.png" type="Texture" id=27]
+[ext_resource path="res://Assets/Animation/heal/Camada 43 copiar 14.png" type="Texture" id=28]
+[ext_resource path="res://Assets/Animation/heal/Camada 43 copiar 15.png" type="Texture" id=29]
+[ext_resource path="res://Assets/Animation/heal/Camada 43 copiar 12.png" type="Texture" id=30]
+[ext_resource path="res://Assets/Animation/heal/Camada 43 copiar 13.png" type="Texture" id=31]
+[ext_resource path="res://Assets/Animation/heal/Camada 43 copiar 16.png" type="Texture" id=32]
+[ext_resource path="res://Assets/Animation/heal/Camada 43 copiar 18.png" type="Texture" id=33]
+[ext_resource path="res://Assets/Animation/heal/Camada 43 copiar 17.png" type="Texture" id=34]
 
 [sub_resource type="DynamicFont" id=1]
 size = 80
 font_data = ExtResource( 3 )
 
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ ExtResource( 21 ), ExtResource( 16 ), ExtResource( 17 ), ExtResource( 18 ), ExtResource( 19 ), ExtResource( 20 ), ExtResource( 25 ), ExtResource( 23 ), ExtResource( 27 ), ExtResource( 24 ), ExtResource( 26 ), ExtResource( 22 ), ExtResource( 30 ), ExtResource( 31 ), ExtResource( 28 ), ExtResource( 29 ), ExtResource( 32 ), ExtResource( 34 ), ExtResource( 33 ) ],
+"loop": false,
+"name": "heal",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 14 ), ExtResource( 9 ), ExtResource( 7 ), ExtResource( 11 ), ExtResource( 12 ), ExtResource( 10 ), ExtResource( 8 ), ExtResource( 13 ) ],
+"loop": false,
+"name": "damage",
+"speed": 5.0
+} ]
+
 [node name="InGame" type="Node2D"]
 script = ExtResource( 1 )
 
 [node name="background" type="Sprite" parent="."]
+show_behind_parent = true
 scale = Vector2( 0.5, 0.5 )
 texture = ExtResource( 2 )
 centered = false
@@ -102,3 +143,11 @@ script = ExtResource( 5 )
 ]]
 position = Vector2( 921.386, 596.572 )
 script = ExtResource( 6 )
+
+[node name="AnimationHandler" type="AnimatedSprite" parent="."]
+visible = false
+position = Vector2( 419.074, 1454.06 )
+frames = SubResource( 2 )
+animation = "damage"
+speed_scale = 5.0
+script = ExtResource( 15 )

@@ -6,14 +6,13 @@ var deck = {
 }
 var table = []
 var obj_player
-var isPalying = true
-var winCondition = false
-
-var minDifficultyCoeficient = 13
-var maxDifficultyCoeficient = 13
+var canPlay = true
+var runCoins = 0
 
 onready var pre_card = preload("res://Scenes/Card.tscn")
 onready var pre_player = preload("res://Scenes/Player.tscn")
+
+onready var animationHandler = $AnimationHandler
 
 func _ready():
 	randomize()
@@ -23,8 +22,9 @@ func _ready():
 	tableSetup()
 
 func _process(delta):
-	if obj_player.stats.life <= 0 and isPalying:
-		isPalying = false
+	if obj_player.stats.life <= 0 and canPlay:
+		Master.coins += runCoins
+		Master.saveData()
 		Master.playAudio("defeat.ogg")
 		Master.moveToScene("DefeatScreen")
 	checkTable()
@@ -66,7 +66,6 @@ func draw():
 		if ((drawingCard.type == Master.cardTypes.sword and tableTable.sword < 2) or deckHasOnly("sword")) or ((drawingCard.type == Master.cardTypes.shield and tableTable.shield < 2) or deckHasOnly("shield")) or ((drawingCard.type == Master.cardTypes.potion and tableTable.potion < 2) or deckHasOnly("potion")) or ((drawingCard.type == Master.cardTypes.coin and tableTable.coin < 2) or deckHasOnly("coin")) or ((drawingCard.type == Master.cardTypes.monster and tableTable.monster < 2) or deckHasOnly("monster")) or ((drawingCard.type == Master.cardTypes.special and tableTable.special < 2) or deckHasOnly("special")) or ((drawingCard.type == Master.cardTypes.hero and tableTable.hero < 2) or deckHasOnly("hero")):
 			table.append(drawingCard)
 			var new_card = pre_card.instance()
-			new_card.canMove = true
 			new_card.stats = drawingCard
 			var _childCounter = 0
 			for slot in $table.get_children():
@@ -114,16 +113,16 @@ func deckHasAllTypes():
 		return true
 
 func checkTable():
-	if deck.deckList.size() > 0 and table.size() == 1:
+	if deck.deckList.size() > 0 and table.size() == 1 and canPlay:
 		clearTable()
 		while(deck.deckList.size() > 0 and table.size() < 4):
 			draw()
 	elif table.size() <= 0:
 		if obj_player.stats.life > 0:
+			Master.coins += runCoins
+			Master.saveData()
 			print("YOU WIN")
 			Master.moveToScene("WinScreen")
-		else:
-			Master.moveToScene("DefeatScreen")
 
 func clearTable():
 	for card in $bag.get_children():
@@ -185,6 +184,7 @@ func loadPlayer():
 	obj_player = pre_player.instance()
 	obj_player.position = Vector2(420, 1450)
 	obj_player.stats = stats
+	obj_player.show_behind_parent = true
 	add_child(obj_player)
 
 func _on_Draw_released():
@@ -195,6 +195,15 @@ func _on_Discard_released():
 		pass
 
 func monsterAttackPlayer(monster):
+	playAnimation()
+#	canPlay = false
+#	animationHandler.visible = true
+#	animationHandler.global_position = obj_player.global_position
+#	animationHandler.frame = 0
+#	animationHandler.play("damage")
+#	yield(animationHandler, "animation_finished")
+#	animationHandler.visible = false
+#	canPlay = true
 	obj_player.stats.life -= monster.stats.value
 	monster.stats.value = 0
 	removeFromTable(monster)
@@ -221,6 +230,15 @@ func sellCard(card):
 #	checkBeforeDestroy(card)
 
 func usePotionItem(item):
+	playAnimation(obj_player.global_position, "heal")
+#	canPlay = false
+#	animationHandler.visible = true
+#	animationHandler.global_position = obj_player.global_position
+#	animationHandler.frame = 0
+#	animationHandler.play("heal")
+#	yield(animationHandler, "animation_finished")
+#	animationHandler.visible = false
+#	canPlay = true
 	obj_player.stats.life += item.stats.value
 	if obj_player.stats.life > obj_player.stats.maxLife:
 		obj_player.stats.life = obj_player.stats.maxLife
@@ -228,10 +246,10 @@ func usePotionItem(item):
 #	removeFromTable(item)
 
 func useCoinItem(item):
-	Master.coins += item.stats.value
+	runCoins += item.stats.value
 	item.stats.value = 0
 #	removeFromTable(item)
-	print("Total Coins: "+str(Master.coins))
+	print("Run Coins: "+str(runCoins))
 
 func checkBeforeDestroy(card, clear = false):
 	if card.stats.value <= 0:
@@ -252,3 +270,13 @@ func removeFromTable(card, sell = false):
 					table.remove(index)
 	if !sell and card.stats.type != Master.cardTypes.monster:
 		checkBeforeDestroy(card)
+
+func playAnimation(_position = obj_player.global_position, _name = "damage"):
+	canPlay = false
+	animationHandler.visible = true
+	animationHandler.global_position = _position
+	animationHandler.frame = 0
+	animationHandler.play(_name)
+	yield(animationHandler, "animation_finished")
+	animationHandler.visible = false
+	canPlay = true

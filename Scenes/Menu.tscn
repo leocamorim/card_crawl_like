@@ -118,6 +118,9 @@ text = "CREDITS"
 align = 1
 valign = 1
 uppercase = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="EventHandler" type="Node" parent="."]
 script = SubResource( 4 )

@@ -2,7 +2,7 @@ extends Area2D
 
 onready var obj_name = get_node("name")
 onready var obj_value = get_node("value")
-var canMove = false
+onready var dealer = get_parent().get_parent().get_parent()
 var dragMouse = false
 var stats setget statsChanged
 var safePosition = Vector2(0,0)
@@ -11,18 +11,14 @@ var collidingGroup
 var inHand = false
 var inBag = false
 var isUsed = false
-var dealer
-
-func _ready():
-	dealer = get_parent().get_parent().get_parent()
 
 func _process(delta):
-	if dragMouse and canMove:
+	if dragMouse and dealer.canPlay:
 		set_global_position(get_viewport().get_mouse_position())
 
 func _on_Card_input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton:
-		if event.is_pressed() and canMove:
+		if event.is_pressed() and dealer.canPlay:
 			print("dragged")
 			safePosition = global_position
 			dragMouse = true
@@ -63,6 +59,15 @@ func useOnPlayer():
 		set_global_position(safePosition)
 
 func swordOnMonster(_sword, _monster = self):
+	dealer.playAnimation(global_position)
+#	dealer.canPlay = false
+#	dealer.animationHandler.visible = true
+#	dealer.animationHandler.global_position = global_position
+#	dealer.animationHandler.frame = 0
+#	dealer.animationHandler.play("damage")
+#	yield(dealer.animationHandler, "animation_finished")
+#	dealer.animationHandler.visible = false
+#	dealer.canPlay = true
 	_monster.stats.value -= _sword.stats.value
 	_sword.stats.value = 0
 	if _monster.stats.value <= 0:
@@ -70,15 +75,28 @@ func swordOnMonster(_sword, _monster = self):
 	dealer.checkBeforeDestroy(_sword)
 
 func monsterOnShield(_monster, _shield = self):
+	dealer.canPlay = false
+	dealer.animationHandler.visible = true
+	dealer.animationHandler.global_position = global_position
+	dealer.animationHandler.frame = 0
+	dealer.animationHandler.play("damage")
+	yield(dealer.animationHandler, "animation_finished")
 	if _monster.stats.value > _shield.stats.value:
+		dealer.canPlay = false
+		dealer.animationHandler.visible = true
+		dealer.animationHandler.global_position = dealer.obj_player.global_position
+		dealer.animationHandler.frame = 0
+		dealer.animationHandler.play("damage")
+		yield(dealer.animationHandler, "animation_finished")
 		dealer.obj_player.stats.life -= _monster.stats.value - _shield.stats.value
 		_shield.stats.value = 0
 	elif _shield.stats.value >= _monster.stats.value:
 		_shield.stats.value -= _monster.stats.value
+	dealer.animationHandler.visible = false
+	dealer.canPlay = true
 	_monster.stats.value = 0
 	dealer.removeFromTable(_monster)
 	dealer.checkBeforeDestroy(_shield)
-	pass
 
 func reparent(new_parent):
 	dealer.table.remove(dealer.table.find(self.stats))

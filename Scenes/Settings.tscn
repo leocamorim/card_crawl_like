@@ -10,15 +10,15 @@
 size = 150
 font_data = ExtResource( 5 )
 
-[sub_resource type="DynamicFont" id=4]
-size = 100
-font_data = ExtResource( 5 )
-
 [sub_resource type="DynamicFont" id=2]
 size = 100
 font_data = ExtResource( 5 )
 
-[sub_resource type="GDScript" id=3]
+[sub_resource type="DynamicFont" id=3]
+size = 100
+font_data = ExtResource( 5 )
+
+[sub_resource type="GDScript" id=4]
 script/source = "extends Node
 
 onready var pre_switchOn = preload(\"res://Assets/Hud/switchOn.png\")
@@ -29,10 +29,12 @@ func _ready():
 
 func _on_bgm_switch_released():
 	Master.bgm = !Master.bgm
+	Master.saveData()
 	updateSwitches()
 
 func _on_sfx_switch_released():
 	Master.sfx = !Master.sfx
+	Master.saveData()
 	updateSwitches()
 
 func updateSwitches():
@@ -83,7 +85,7 @@ margin_left = 148.518
 margin_top = 181.465
 margin_right = 319.518
 margin_bottom = 279.465
-custom_fonts/font = SubResource( 4 )
+custom_fonts/font = SubResource( 2 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "BGM"
 __meta__ = {
@@ -95,7 +97,7 @@ margin_left = 478.146
 margin_top = 37.6278
 margin_right = 593.146
 margin_bottom = 135.628
-custom_fonts/font = SubResource( 4 )
+custom_fonts/font = SubResource( 2 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "ON"
 __meta__ = {
@@ -107,7 +109,7 @@ margin_left = -173.394
 margin_top = 37.6278
 margin_right = -25.3936
 margin_bottom = 135.628
-custom_fonts/font = SubResource( 4 )
+custom_fonts/font = SubResource( 2 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "off"
 __meta__ = {
@@ -123,7 +125,7 @@ margin_left = 148.518
 margin_top = 181.465
 margin_right = 287.518
 margin_bottom = 279.465
-custom_fonts/font = SubResource( 4 )
+custom_fonts/font = SubResource( 2 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "SFX"
 __meta__ = {
@@ -135,7 +137,7 @@ margin_left = 478.146
 margin_top = 37.628
 margin_right = 593.146
 margin_bottom = 135.628
-custom_fonts/font = SubResource( 4 )
+custom_fonts/font = SubResource( 2 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "ON"
 __meta__ = {
@@ -147,7 +149,7 @@ margin_left = -173.394
 margin_top = 37.628
 margin_right = -25.3936
 margin_bottom = 135.628
-custom_fonts/font = SubResource( 4 )
+custom_fonts/font = SubResource( 2 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "off"
 __meta__ = {
@@ -164,7 +166,7 @@ margin_left = 16.0
 margin_top = 14.0
 margin_right = 493.0
 margin_bottom = 142.0
-custom_fonts/font = SubResource( 2 )
+custom_fonts/font = SubResource( 3 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "BACK"
 align = 1
@@ -174,7 +176,7 @@ __meta__ = {
 }
 
 [node name="EventHandler" type="Node" parent="."]
-script = SubResource( 3 )
+script = SubResource( 4 )
 [connection signal="released" from="bgm_switch" to="EventHandler" method="_on_bgm_switch_released"]
 [connection signal="released" from="sfx_switch" to="EventHandler" method="_on_sfx_switch_released"]
 [connection signal="pressed" from="BtBack" to="EventHandler" method="_on_BtBack_pressed"]
