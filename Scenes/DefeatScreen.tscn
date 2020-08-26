@@ -1,12 +1,17 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Scripts/DefeatScreen.gd" type="Script" id=1]
 [ext_resource path="res://Assets/Hud/new_tela-derrota.png" type="Texture" id=2]
 [ext_resource path="res://Assets/Fonts/gutter/Gutter Regular.otf" type="DynamicFontData" id=3]
 [ext_resource path="res://Assets/Hud/button.png" type="Texture" id=4]
+[ext_resource path="res://Assets/Sprites/coin-22.png" type="Texture" id=5]
 
 [sub_resource type="DynamicFont" id=1]
 size = 100
+font_data = ExtResource( 3 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 80
 font_data = ExtResource( 3 )
 
 [node name="DefeatScreen" type="Node2D"]
@@ -17,7 +22,7 @@ texture = ExtResource( 2 )
 centered = false
 
 [node name="TouchScreenButton" type="TouchScreenButton" parent="."]
-position = Vector2( 277.5, 1254.05 )
+position = Vector2( 277.5, 1622.63 )
 normal = ExtResource( 4 )
 
 [node name="Label" type="Label" parent="TouchScreenButton"]
@@ -26,6 +31,25 @@ margin_bottom = 179.0
 custom_fonts/font = SubResource( 1 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "MENU"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CoinSprite" type="Sprite" parent="."]
+position = Vector2( 539.884, 1288.57 )
+scale = Vector2( 0.987, 0.987 )
+texture = ExtResource( 5 )
+
+[node name="Coins" type="Label" parent="CoinSprite"]
+margin_left = 66.0
+margin_top = -296.0
+margin_right = 206.0
+margin_bottom = -198.0
+custom_fonts/font = SubResource( 2 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "+50"
 align = 1
 valign = 1
 __meta__ = {

@@ -1,5 +1,5 @@
 {
-  "bgm": true,
-  "coins": 918,
-  "sfx": true
+  "bgm": false,
+  "coins": 3952,
+  "sfx": false
 }

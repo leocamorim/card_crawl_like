@@ -22,9 +22,12 @@ func _ready():
 	tableSetup()
 
 func _process(delta):
-	if obj_player.stats.life <= 0 and canPlay:
-		Master.coins += runCoins
+	if !obj_player.get_node("AnimationPlayer").is_playing() and obj_player.stats.life <= 0 and canPlay:
+		obj_player.get_node("AnimationPlayer").play("dead")
+		Master.lastRunCoins = runCoins
+		Master.coins += Master.lastRunCoins
 		Master.saveData()
+		yield(obj_player.get_node("AnimationPlayer"), "animation_finished")
 		Master.playAudio("defeat.ogg")
 		Master.moveToScene("DefeatScreen")
 	checkTable()
@@ -66,6 +69,7 @@ func draw():
 		if ((drawingCard.type == Master.cardTypes.sword and tableTable.sword < 2) or deckHasOnly("sword")) or ((drawingCard.type == Master.cardTypes.shield and tableTable.shield < 2) or deckHasOnly("shield")) or ((drawingCard.type == Master.cardTypes.potion and tableTable.potion < 2) or deckHasOnly("potion")) or ((drawingCard.type == Master.cardTypes.coin and tableTable.coin < 2) or deckHasOnly("coin")) or ((drawingCard.type == Master.cardTypes.monster and tableTable.monster < 2) or deckHasOnly("monster")) or ((drawingCard.type == Master.cardTypes.special and tableTable.special < 2) or deckHasOnly("special")) or ((drawingCard.type == Master.cardTypes.hero and tableTable.hero < 2) or deckHasOnly("hero")):
 			table.append(drawingCard)
 			var new_card = pre_card.instance()
+			new_card.visible = false
 			new_card.stats = drawingCard
 			var _childCounter = 0
 			for slot in $table.get_children():
@@ -74,9 +78,20 @@ func draw():
 					_childCounter = $table.get_child_count()
 			deck.deckList.pop_front()
 			updateLabel()
+			new_card.get_node("AnimationPlayer").play("fadeIn")
+			return new_card
 		else:
 			shuffleDeck()
-			draw()
+			return draw()
+
+func canPlay():
+	if $AnimationHandler.visible == true:
+		return false
+	for slot in $table.get_children():
+		if slot.get_children().size() > 0:
+			if slot.get_children()[0].get_node("AnimationPlayer").is_playing():
+				return false
+	return true
 
 func deckHasOnly(_type):
 	for card in deck.deckList:
@@ -84,42 +99,16 @@ func deckHasOnly(_type):
 			return false
 	return true
 
-func deckHasAllTypes():
-	var tableTable = {
-		sword = 0,
-		shield = 0,
-		potion = 0,
-		coin = 0,
-		monster = 0,
-		special = 0,
-		hero = 0,
-	}
-	for card in deck.deckList:
-		if card.type == 1:
-			tableTable.sword += 1
-		if card.type == 2:
-			tableTable.shield += 1
-		if card.type == 3:
-			tableTable.potion += 1
-		if card.type == 4:
-			tableTable.coin += 1
-		if card.type == 5:
-			tableTable.monster += 1
-		if card.type == 6:
-			tableTable.special += 1
-		if card.type == 7:
-			tableTable.hero += 1
-	if tableTable.sword > 0 and tableTable.shield > 0 and tableTable.potion > 0 and tableTable.coin > 0 and tableTable.monster > 0 and tableTable.special > 0 and tableTable.hero > 0:
-		return true
-
 func checkTable():
 	if deck.deckList.size() > 0 and table.size() == 1 and canPlay:
 		clearTable()
 		while(deck.deckList.size() > 0 and table.size() < 4):
-			draw()
+			var new_card = draw()
+			yield(new_card.get_node("AnimationPlayer"), "animation_finished")
 	elif table.size() <= 0:
 		if obj_player.stats.life > 0:
-			Master.coins += runCoins
+			Master.lastRunCoins = runCoins
+			Master.coins += Master.lastRunCoins
 			Master.saveData()
 			print("YOU WIN")
 			Master.moveToScene("WinScreen")
@@ -149,13 +138,13 @@ func tableSetup():
 				if(item.has_method("_on_Card_area_entered")):
 					checkBeforeDestroy(item)
 		while table.size() < 4 and deck.deckList.size() > 0:
-			draw()
+			var new_card = draw()
+			yield(new_card.get_node("AnimationPlayer"), "animation_finished")
 
 func updateLabel():
-	$Label.text = ""
+	$Gold.text = str(runCoins) + " GOLD"
 	$DeckLabel.text = str(deck.deckList.size())
-	for card in table:
-		$Label.text += str(card.name)+" "+str(card.value)+"\n"
+
 
 func shuffleDeck():
 	randomize()
@@ -163,7 +152,8 @@ func shuffleDeck():
 
 func loadDeck():
 	cardList = Master.readJSON("cardDB")
-	deck = Master.readJSON("deck")
+	Master.decks.shuffle()
+	deck = Master.readJSON(Master.decks[0])
 	var deckList = [];
 	for card in cardList:
 		for cardId in deck.deckList:
@@ -195,15 +185,17 @@ func _on_Discard_released():
 		pass
 
 func monsterAttackPlayer(monster):
-	playAnimation()
-#	canPlay = false
-#	animationHandler.visible = true
-#	animationHandler.global_position = obj_player.global_position
-#	animationHandler.frame = 0
-#	animationHandler.play("damage")
-#	yield(animationHandler, "animation_finished")
-#	animationHandler.visible = false
-#	canPlay = true
+#	playAnimation()
+	canPlay = false
+	animationHandler.visible = true
+	animationHandler.global_position = obj_player.global_position
+	animationHandler.frame = 0
+	animationHandler.play("damage")
+	yield(animationHandler, "animation_finished")
+	animationHandler.visible = false
+	obj_player.get_node("AnimationPlayer").play("receiveDmg")
+	yield(obj_player.get_node("AnimationPlayer"), "animation_finished")
+	canPlay = true
 	obj_player.stats.life -= monster.stats.value
 	monster.stats.value = 0
 	removeFromTable(monster)
@@ -230,15 +222,15 @@ func sellCard(card):
 #	checkBeforeDestroy(card)
 
 func usePotionItem(item):
-	playAnimation(obj_player.global_position, "heal")
-#	canPlay = false
-#	animationHandler.visible = true
-#	animationHandler.global_position = obj_player.global_position
-#	animationHandler.frame = 0
-#	animationHandler.play("heal")
-#	yield(animationHandler, "animation_finished")
-#	animationHandler.visible = false
-#	canPlay = true
+#	playAnimation(obj_player.global_position, "heal")
+	canPlay = false
+	animationHandler.visible = true
+	animationHandler.global_position = obj_player.global_position
+	animationHandler.frame = 0
+	animationHandler.play("heal")
+	yield(animationHandler, "animation_finished")
+	animationHandler.visible = false
+	canPlay = true
 	obj_player.stats.life += item.stats.value
 	if obj_player.stats.life > obj_player.stats.maxLife:
 		obj_player.stats.life = obj_player.stats.maxLife
@@ -249,18 +241,30 @@ func useCoinItem(item):
 	runCoins += item.stats.value
 	item.stats.value = 0
 #	removeFromTable(item)
+	updateLabel()
 	print("Run Coins: "+str(runCoins))
 
 func checkBeforeDestroy(card, clear = false):
 	if card.stats.value <= 0:
+		canPlay = false
+		var anim = card.get_node("AnimationPlayer")
+		anim.play("fadeOut")
+		yield(anim, "animation_finished")
 		if  card.inHand or card.inBag:
 			card.get_parent().free = true
 		elif card.stats.type == Master.cardTypes.monster:
 			removeFromTable(card)
 		if clear or (card.stats.type != Master.cardTypes.monster and card.stats.type != Master.cardTypes.coin and card.stats.type != Master.cardTypes.potion):
 			card.get_parent().remove_child(card)
+		canPlay = true
 
 func removeFromTable(card, sell = false):
+	if !sell and card.stats.type != Master.cardTypes.monster:
+		checkBeforeDestroy(card)
+	else:
+		var anim = card.get_node("AnimationPlayer")
+		anim.play("fadeOut")
+		yield(anim, "animation_finished")
 	if card.get_parent().get_parent() == $table:
 		card.get_parent().remove_child(card)
 		var index = -1
@@ -268,15 +272,4 @@ func removeFromTable(card, sell = false):
 				index += 1
 				if(item.id == card.stats.id):
 					table.remove(index)
-	if !sell and card.stats.type != Master.cardTypes.monster:
-		checkBeforeDestroy(card)
-
-func playAnimation(_position = obj_player.global_position, _name = "damage"):
-	canPlay = false
-	animationHandler.visible = true
-	animationHandler.global_position = _position
-	animationHandler.frame = 0
-	animationHandler.play(_name)
-	yield(animationHandler, "animation_finished")
-	animationHandler.visible = false
-	canPlay = true
+					break

@@ -1,0 +1,8 @@
+{
+	"id": 2,
+	"name": "Initial Deck 2",
+	"desc": "The second first deck of the newbies.",
+	"deckList": [
+		1, 1, 1, 1, 1, 1
+	]
+}

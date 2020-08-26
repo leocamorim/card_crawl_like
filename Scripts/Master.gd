@@ -1,5 +1,7 @@
 extends Node
 
+var decks = ["deck1"]
+
 var cardTypes = {
 	sword = 1,
 	shield = 2,
@@ -22,12 +24,12 @@ var colliderTypes = {
 var deck = []
 var sfx = true
 var bgm = true
-var isDragin = false
 var coins = 0
+var isDragin = false
+var lastRunCoins = 0
 
 func _ready():
 	loadData()
-	pass
 
 func moveToScene(sceneName):
 	get_tree().change_scene("res://Scenes/"+sceneName+".tscn")
@@ -59,7 +61,7 @@ func playAudio(_name, _type = "sfx"):
 		player.queue_free()
 
 func loadData():
-		# Load
+	# Load
 	var f = File.new()
 	f.open("res://Assets/Data/save.json", File.READ)
 	var json = JSON.parse(f.get_as_text())
