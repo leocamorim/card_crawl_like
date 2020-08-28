@@ -23,6 +23,7 @@ boot_splash/bg_color=Color( 1, 1, 1, 1 )
 [autoload]
 
 Master="*res://Scripts/Master.gd"
+Ss="*res://Scripts/SaveSystem.gd"
 
 [debug]
 

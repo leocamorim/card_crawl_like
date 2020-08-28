@@ -25,7 +25,7 @@ func _process(delta):
 	if !obj_player.get_node("AnimationPlayer").is_playing() and obj_player.stats.life <= 0 and canPlay:
 		obj_player.get_node("AnimationPlayer").play("dead")
 		Master.lastRunCoins = runCoins
-		Master.coins += Master.lastRunCoins
+		Master.coins += runCoins
 		Master.saveData()
 		yield(obj_player.get_node("AnimationPlayer"), "animation_finished")
 		Master.playAudio("defeat.ogg")
@@ -200,22 +200,22 @@ func monsterAttackPlayer(monster):
 	monster.stats.value = 0
 	removeFromTable(monster)
 
-func useBattleItem(item, monster):
-	var originalValues = {
-		item = int(item.stats.value),
-		monster = int(monster.stats.value)
-	}
-	monster.stats.value -= originalValues.item
-	if(item.stats.type == Master.cardTypes.sword):
-		item.stats.value = 0
-		checkBeforeDestroy(monster)
-	elif(item.stats.type == Master.cardTypes.shield):
-		item.stats.value -= originalValues.monster
-		if(monster.stats.value > 0):
-			monsterAttackPlayer(monster)
-		else:
-			checkBeforeDestroy(monster)
-	checkBeforeDestroy(item)
+#func useBattleItem(item, monster):
+#	var originalValues = {
+#		item = int(item.stats.value),
+#		monster = int(monster.stats.value)
+#	}
+#	monster.stats.value -= originalValues.item
+#	if(item.stats.type == Master.cardTypes.sword):
+#		item.stats.value = 0
+#		checkBeforeDestroy(monster)
+#	elif(item.stats.type == Master.cardTypes.shield):
+#		item.stats.value -= originalValues.monster
+#		if(monster.stats.value > 0):
+#			monsterAttackPlayer(monster)
+#		else:
+#			checkBeforeDestroy(monster)
+#	checkBeforeDestroy(item)
 
 func sellCard(card):
 	removeFromTable(card, true)

@@ -25,6 +25,7 @@ onready var pre_switchOn = preload(\"res://Assets/Hud/switchOn.png\")
 onready var pre_switchOff = preload(\"res://Assets/Hud/switchOff.png\")
 
 func _ready():
+	Master.loadData()
 	updateSwitches()
 
 func _on_bgm_switch_released():
