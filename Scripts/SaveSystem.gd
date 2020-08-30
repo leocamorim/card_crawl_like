@@ -12,7 +12,6 @@ var data = {}
 
 func _ready():
 	loadGame()
-	updateMaster()
 
 func loadGame():
 	var file = File.new()
@@ -37,15 +36,10 @@ func saveGame():
 
 	file.open(path, File.WRITE)
 	
-	data["bgm"] = Master.bgm
-	data["coins"] = Master.coins
-	data["sfx"] = Master.sfx
+	data["bgm"] = data["bgm"]
+	data["coins"] = data["coins"]
+	data["sfx"] = data["sfx"]
 
 	file.store_line(to_json(data))
 
 	file.close()
-
-func updateMaster():
-	Master.bgm = data["bgm"]
-	Master.coins = data["coins"]
-	Master.sfx = data["sfx"]

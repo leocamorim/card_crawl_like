@@ -22,14 +22,8 @@ var colliderTypes = {
 }
 
 var deck = []
-var sfx = true
-var bgm = true
-var coins = 0
 var isDragin = false
 var lastRunCoins = 0
-
-func _ready():
-	loadData()
 
 func moveToScene(sceneName):
 	get_tree().change_scene("res://Scenes/"+sceneName+".tscn")
@@ -52,41 +46,10 @@ func getTypeName(_int):
 			return key
 
 func playAudio(_name, _type = "sfx"):
-	if (_type == "sfx" and Master.sfx) or (_type == "bgm" and Master.bgm):
+	if (_type == "sfx" and Ss.data["sfx"]) or (_type == "bgm" and Ss.data["bgm"]):
 		var player = AudioStreamPlayer.new()
 		self.add_child(player)
 		player.stream = load('res://Assets/Audio/' + _name)
 		player.play()
 		yield(player, "finished")
 		player.queue_free()
-
-func loadData():
-	# Load
-	var f = File.new()
-	f.open("res://Assets/Data/save.json", File.READ)
-	var json = JSON.parse(f.get_as_text())
-	f.close()
-	var data = json.result
-	
-	bgm = data["bgm"]
-	coins = data["coins"]
-	sfx = data["sfx"]
-
-func saveData():
-		# Load
-	var f = File.new()
-	f.open("res://Assets/Data/save.json", File.READ)
-	var json = JSON.parse(f.get_as_text())
-	f.close()
-	var data = json.result
-	
-	# Modify
-	data["sfx"] = sfx
-	data["bgm"] = bgm
-	data["coins"] = coins
-	
-	# Save
-	f = File.new()
-	f.open("res://Assets/Data/save.json", File.WRITE)
-	f.store_string(JSON.print(data, "  ", true))
-	f.close()

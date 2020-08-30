@@ -1,5 +1,5 @@
 extends Node2D
 
 func _ready():
-	Master.loadData()
-	$Gold.text = str(Master.coins) + " GOLD"
+	Ss.loadGame()
+	$Gold.text = str(Ss.data["coins"]) + " GOLD"

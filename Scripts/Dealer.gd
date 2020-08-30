@@ -25,8 +25,8 @@ func _process(delta):
 	if !obj_player.get_node("AnimationPlayer").is_playing() and obj_player.stats.life <= 0 and canPlay:
 		obj_player.get_node("AnimationPlayer").play("dead")
 		Master.lastRunCoins = runCoins
-		Master.coins += runCoins
-		Master.saveData()
+		Ss.data.coins += Master.lastRunCoins
+		Ss.saveGame()
 		yield(obj_player.get_node("AnimationPlayer"), "animation_finished")
 		Master.playAudio("defeat.ogg")
 		Master.moveToScene("DefeatScreen")
@@ -108,8 +108,8 @@ func checkTable():
 	elif table.size() <= 0:
 		if obj_player.stats.life > 0:
 			Master.lastRunCoins = runCoins
-			Master.coins += Master.lastRunCoins
-			Master.saveData()
+			Ss.data.coins += Master.lastRunCoins
+			Ss.saveGame()
 			print("YOU WIN")
 			Master.moveToScene("WinScreen")
 
