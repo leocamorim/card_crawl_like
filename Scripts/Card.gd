@@ -20,7 +20,7 @@ func _process(delta):
 func _on_Card_input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton:
 		if event.is_pressed() and dealer.canPlay():
-			print("dragged")
+#			print("dragged")
 			safePosition = global_position
 			dragMouse = true
 			Master.isDragin = true
@@ -43,10 +43,10 @@ func mouseReleased(dragging):
 		var height = $img.texture.get_height() * transform.get_scale().y
 		if get_viewport().get_mouse_position().x > global_position.x - width/2 and get_viewport().get_mouse_position().x < global_position.x + width/2 and get_viewport().get_mouse_position().y > global_position.y - height/2 and get_viewport().get_mouse_position().y < global_position.y + height/2:
 			if dragging.inHand and stats.type == Master.cardTypes.monster and dragging.stats.type == Master.cardTypes.sword:
-				print("attacking monster")
+#				print("attacking monster")
 				swordOnMonster(dragging)
 			if inHand and stats.type == Master.cardTypes.shield and dragging.stats.type == Master.cardTypes.monster:
-				print("monster attacking shield")
+#				print("monster attacking shield")
 				monsterOnShield(dragging)
 				pass
 	else:
@@ -70,6 +70,7 @@ func swordOnMonster(_sword, _monster = self):
 	yield($AnimationPlayer, "animation_finished")
 	dealer.canPlay = true
 	_monster.stats.value -= _sword.stats.value
+	dealer.popTicket("-" + str(_sword.stats.value), _monster)
 	_sword.stats.value = 0
 	dealer.checkBeforeDestroy(_sword)
 	if _monster.stats.value <= 0:
@@ -91,9 +92,12 @@ func monsterOnShield(_monster, _shield = self):
 		dealer.obj_player.get_node("AnimationPlayer").play("receiveDmg")
 		yield(dealer.obj_player.get_node("AnimationPlayer"), "animation_finished")
 		dealer.obj_player.stats.life -= _monster.stats.value - _shield.stats.value
+		dealer.popTicket("-" + str(_monster.stats.value - _shield.stats.value))
 		_shield.stats.value = 0
+		dealer.popTicket("-" + str(_shield.stats.value), _shield)
 	elif _shield.stats.value >= _monster.stats.value:
 		_shield.stats.value -= _monster.stats.value
+		dealer.popTicket("-" + str(_monster.stats.value), _shield)
 	dealer.animationHandler.visible = false
 	dealer.canPlay = true
 	_monster.stats.value = 0

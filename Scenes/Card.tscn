@@ -19,7 +19,7 @@ font_data = ExtResource( 3 )
 [sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 218.93, 315.942 )
 
-[sub_resource type="Animation" id=5]
+[sub_resource type="Animation" id=4]
 resource_name = "fadeIn"
 length = 0.5
 tracks/0/type = "value"
@@ -59,8 +59,7 @@ tracks/2/keys = {
 "values": [ Vector2( 0, -25 ), Vector2( 0, 0 ) ]
 }
 
-[sub_resource type="Animation" id=4]
-resource_name = "fadeOut"
+[sub_resource type="Animation" id=5]
 length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:visible")
@@ -174,7 +173,7 @@ visible = false
 shape = SubResource( 3 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-anims/fadeIn = SubResource( 5 )
-anims/fadeOut = SubResource( 4 )
+anims/fadeIn = SubResource( 4 )
+anims/fadeOut = SubResource( 5 )
 anims/receiveDmg = SubResource( 6 )
 [connection signal="input_event" from="." to="." method="_on_Card_input_event"]

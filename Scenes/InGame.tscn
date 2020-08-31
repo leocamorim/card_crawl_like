@@ -125,6 +125,9 @@ position = Vector2( 910, 1060 )
 position = Vector2( 170, 1450 )
 script = ExtResource( 4 )
 
+[node name="player" type="Position2D" parent="."]
+position = Vector2( 420, 1450 )
+
 [node name="leftHand" type="Position2D" parent="." groups=[
 "hand",
 ]]
@@ -151,3 +154,6 @@ animation = "heal"
 frame = 18
 speed_scale = 5.0
 script = ExtResource( 15 )
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true

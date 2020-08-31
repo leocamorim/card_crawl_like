@@ -33,7 +33,7 @@ func _on_bt_config_pressed():
 	get_parent().get_node(\"BtConfig/Label\").rect_position.y += 30
 
 func _on_bt_desc_pressed():
-	get_parent().get_node(\"BtDesc/Label\").rect_position.y += 30
+	get_parent().get_node(\"BtHelp/Label\").rect_position.y += 30
 
 func _on_bt_start_released():
 	get_parent().get_node(\"BtStart/Label\").rect_position.y -= 30
@@ -44,7 +44,7 @@ func _on_bt_config_released():
 	Master.moveToScene(\"Settings\")
 
 func _on_bt_desc_released():
-	get_parent().get_node(\"BtDesc/Label\").rect_position.y -= 30
+	get_parent().get_node(\"BtHelp/Label\").rect_position.y -= 30
 "
 
 [node name="Menu" type="Node2D"]
@@ -105,16 +105,16 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="BtDesc" type="Node2D" parent="."]
+[node name="BtHelp" type="Node2D" parent="."]
 position = Vector2( 270, 1300 )
 
-[node name="bt_desc" type="TouchScreenButton" parent="BtDesc"]
+[node name="bt_help" type="TouchScreenButton" parent="BtHelp"]
 position = Vector2( 51, 0 )
 scale = Vector2( 0.8, 0.8 )
 normal = ExtResource( 5 )
 pressed = ExtResource( 6 )
 
-[node name="Label" type="Label" parent="BtDesc"]
+[node name="Label" type="Label" parent="BtHelp"]
 margin_left = 64.0
 margin_top = 13.0
 margin_right = 446.0
@@ -148,5 +148,5 @@ script = SubResource( 5 )
 [connection signal="released" from="BtStart/bt_start" to="EventHandler" method="_on_bt_start_released"]
 [connection signal="pressed" from="BtConfig/bt_config" to="EventHandler" method="_on_bt_config_pressed"]
 [connection signal="released" from="BtConfig/bt_config" to="EventHandler" method="_on_bt_config_released"]
-[connection signal="pressed" from="BtDesc/bt_desc" to="EventHandler" method="_on_bt_desc_pressed"]
-[connection signal="released" from="BtDesc/bt_desc" to="EventHandler" method="_on_bt_desc_released"]
+[connection signal="pressed" from="BtHelp/bt_help" to="EventHandler" method="_on_bt_desc_pressed"]
+[connection signal="released" from="BtHelp/bt_help" to="EventHandler" method="_on_bt_desc_released"]
