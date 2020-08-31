@@ -16,6 +16,7 @@ onready var pre_ticket = preload("res://Scenes/Ticket.tscn")
 onready var animationHandler = $AnimationHandler
 
 func _ready():
+	Master.bgmChange("gameBgm.wav")
 	randomize()
 	loadPlayer()
 	loadDeck()

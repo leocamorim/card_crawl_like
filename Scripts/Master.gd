@@ -25,6 +25,12 @@ var deck = []
 var isDragin = false
 var lastRunCoins = 0
 
+var bgmAudio
+
+func _ready():
+	Ss.loadGame()
+	playAudio("menuBgm.wav", "bgm")
+
 func moveToScene(sceneName):
 	get_tree().change_scene("res://Scenes/"+sceneName+".tscn")
 
@@ -50,6 +56,23 @@ func playAudio(_name, _type = "sfx"):
 		var player = AudioStreamPlayer.new()
 		self.add_child(player)
 		player.stream = load('res://Assets/Audio/' + _name)
+		if _type == "bgm":
+			player.volume_db = -5
 		player.play()
-		yield(player, "finished")
-		player.queue_free()
+		if _type == "bgm":
+			if bgmAudio and bgmAudio.playing:
+				bgmAudio.queue_free()
+			bgmAudio = player
+			yield(player, "finished")
+			bgmAudio.stop()
+		else:
+			yield(player, "finished")
+			player.queue_free()
+
+func bgmChange(_keep = ""):
+	if _keep != "":
+		if bgmAudio.stream.resource_path != "res://Assets/Audio/" + _keep:
+			bgmAudio.emit_signal("finished")
+			playAudio(_keep, "bgm")
+	else:
+		bgmAudio.emit_signal("finished")

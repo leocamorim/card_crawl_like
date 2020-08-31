@@ -10,9 +10,6 @@ var default_data = {
 
 var data = {}
 
-func _ready():
-	loadGame()
-
 func loadGame():
 	var file = File.new()
 	
