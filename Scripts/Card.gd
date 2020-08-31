@@ -91,10 +91,10 @@ func monsterOnShield(_monster, _shield = self):
 		dealer.animationHandler.play("damage")
 		dealer.obj_player.get_node("AnimationPlayer").play("receiveDmg")
 		yield(dealer.obj_player.get_node("AnimationPlayer"), "animation_finished")
-		dealer.obj_player.stats.life -= _monster.stats.value - _shield.stats.value
 		dealer.popTicket("-" + str(_monster.stats.value - _shield.stats.value))
-		_shield.stats.value = 0
 		dealer.popTicket("-" + str(_shield.stats.value), _shield)
+		dealer.obj_player.stats.life -= _monster.stats.value - _shield.stats.value
+		_shield.stats.value = 0
 	elif _shield.stats.value >= _monster.stats.value:
 		_shield.stats.value -= _monster.stats.value
 		dealer.popTicket("-" + str(_monster.stats.value), _shield)
