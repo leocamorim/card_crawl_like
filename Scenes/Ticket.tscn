@@ -4,7 +4,7 @@
 [ext_resource path="res://Assets/Fonts/gutter/Gutter Regular.otf" type="DynamicFontData" id=2]
 [ext_resource path="res://Scripts/Ticket.gd" type="Script" id=3]
 
-[sub_resource type="DynamicFont" id=3]
+[sub_resource type="DynamicFont" id=1]
 size = 60
 font_data = ExtResource( 2 )
 
@@ -34,7 +34,7 @@ tracks/1/keys = {
 "times": PoolRealArray( 0, 0.3, 2.3 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 0,
-"values": [ Vector2( 1e-05, 1e-05 ), Vector2( 0.6, 0.6 ), Vector2( 0.4, 0.4 ) ]
+"values": [ Vector2( 1e-05, 1e-05 ), Vector2( 0.8, 0.8 ), Vector2( 0.7, 0.7 ) ]
 }
 tracks/2/type = "value"
 tracks/2/path = NodePath(".:modulate")
@@ -53,13 +53,12 @@ tracks/2/keys = {
 "ticket",
 ]]
 modulate = Color( 1, 1, 1, 0 )
-position = Vector2( 0, -115 )
-scale = Vector2( 0.4, 0.4 )
+scale = Vector2( 1e-05, 1e-05 )
 script = ExtResource( 3 )
 
 [node name="ticket" type="Sprite" parent="."]
 position = Vector2( -2.5, 0 )
-scale = Vector2( 0.75, 0.75 )
+scale = Vector2( 0.5, 0.75 )
 texture = ExtResource( 1 )
 __meta__ = {
 "_edit_group_": true
@@ -70,13 +69,13 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -122.0
-margin_top = -53.0
-margin_right = 118.0
-margin_bottom = 6.0
-custom_fonts/font = SubResource( 3 )
+margin_left = -51.0
+margin_top = -51.3333
+margin_right = 46.0
+margin_bottom = 7.66667
+custom_fonts/font = SubResource( 1 )
 custom_colors/font_color = Color( 1, 1, 1, 1 )
-text = "SAMPLE"
+text = "+10"
 align = 1
 valign = 1
 __meta__ = {

@@ -287,10 +287,8 @@ func removeFromTable(card, sell = false):
 
 func popTicket(text, parent = obj_player):
 	parent = parent.get_parent()
-#	print(parent)
 	var _ticket = pre_ticket.instance()
 	parent.add_child(_ticket)
-#	_ticket.set_scale(Vector2(1, 1))
-#	_ticket.transform.scale.y = 1
+	_ticket.scale = Vector2(2, 2)
 	_ticket.global_position = parent.global_position
 	_ticket.setText(text)
