@@ -71,8 +71,11 @@ func playAudio(_name, _type = "sfx"):
 
 func bgmChange(_keep = ""):
 	if _keep != "":
-		if bgmAudio.stream.resource_path != "res://Assets/Audio/" + _keep:
-			bgmAudio.emit_signal("finished")
+		if bgmAudio:
+			if bgmAudio.stream.resource_path != "res://Assets/Audio/" + _keep:
+				bgmAudio.emit_signal("finished")
+				playAudio(_keep, "bgm")
+		else:
 			playAudio(_keep, "bgm")
 	else:
 		bgmAudio.emit_signal("finished")
