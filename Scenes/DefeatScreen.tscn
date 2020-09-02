@@ -38,6 +38,7 @@ __meta__ = {
 }
 
 [node name="CoinSprite" type="Sprite" parent="."]
+visible = false
 position = Vector2( 539.884, 1288.57 )
 scale = Vector2( 0.987, 0.987 )
 texture = ExtResource( 5 )

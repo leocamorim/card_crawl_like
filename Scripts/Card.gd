@@ -25,10 +25,12 @@ func _on_Card_input_event(viewport, event, shape_idx):
 			safePosition = global_position
 			dragMouse = true
 			Master.isDragin = true
+			Master.playAudio("drag.wav")
 		elif dragMouse: 
 			dragMouse = false
 			Master.isDragin = false
 			onRelease()
+#			Master.playAudio("release.wav")
 
 func onRelease():
 	get_tree().call_group("card", "mouseReleased", self)
@@ -36,7 +38,6 @@ func onRelease():
 	get_tree().call_group("hand", "mouseReleased", self)
 	get_tree().call_group("bag", "mouseReleased", self)
 	get_tree().call_group("sellCard", "mouseReleased", self)
-	pass
 
 func mouseReleased(dragging):
 	if dragging != self:
@@ -47,7 +48,6 @@ func mouseReleased(dragging):
 				swordOnMonster(dragging)
 			if inHand and stats.type == Master.cardTypes.shield and dragging.stats.type == Master.cardTypes.monster:
 				monsterOnShield(dragging)
-				pass
 	else:
 		set_global_position(safePosition)
 

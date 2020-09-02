@@ -12,15 +12,6 @@ var cardTypes = {
 	hero = 7
 }
 
-var colliderTypes = {
-	player = "player",
-	leftHand = "leftHand",
-	rightHand = "rightHand",
-	bag = "bag",
-	card = "card",
-	sellCard = "sellCard"
-}
-
 var deck = []
 var isDragin = false
 var lastRunCoins = 0
@@ -56,8 +47,6 @@ func playAudio(_name, _type = "sfx"):
 		var player = AudioStreamPlayer.new()
 		self.add_child(player)
 		player.stream = load('res://Assets/Audio/' + _name)
-		if _type == "bgm":
-			player.volume_db = 5
 		player.play()
 		if _type == "bgm":
 			if bgmAudio and bgmAudio.playing:

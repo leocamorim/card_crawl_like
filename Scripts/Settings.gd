@@ -11,15 +11,17 @@ func _on_bgm_switch_released():
 	Ss.data["bgm"] = !Ss.data["bgm"]
 	Ss.saveGame()
 	updateSwitches()
-	if Ss.data["bgm"]:
-		Master.playAudio("menuBgm.wav", "bgm")
-	else:
+	Master.playAudio("button.wav")
+	if !Ss.data["bgm"]:
 		Master.bgmChange()
+	else:
+		Master.playAudio("menuBgm.wav", "bgm")
 
 func _on_sfx_switch_released():
 	Ss.data["sfx"] = !Ss.data["sfx"]
 	Ss.saveGame()
 	updateSwitches()
+	Master.playAudio("button.wav")
 
 func updateSwitches():
 	if Ss.data["bgm"]:
@@ -34,6 +36,7 @@ func updateSwitches():
 
 func _on_BtBack_pressed():
 	get_parent().get_node("BtBack/Label").rect_position.y += 30
+	Master.playAudio("button.wav")
 
 func _on_BtBack_released():
 	Master.moveToScene("Menu")

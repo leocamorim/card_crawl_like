@@ -24,10 +24,10 @@ func _ready():
 
 func _process(delta):
 	if !obj_player.get_node("AnimationPlayer").is_playing() and obj_player.stats.life <= 0 and canPlay():
+#		Master.lastRunCoins = runCoins
+#		Ss.data.coins += Master.lastRunCoins
+#		Ss.saveGame()
 		obj_player.get_node("AnimationPlayer").play("dead")
-		Master.lastRunCoins = runCoins
-		Ss.data.coins += Master.lastRunCoins
-		Ss.saveGame()
 		yield(obj_player.get_node("AnimationPlayer"), "animation_finished")
 		Master.playAudio("defeat.wav")
 		Master.moveToScene("DefeatScreen")
@@ -109,7 +109,7 @@ func draw():
 				if card.stats.type == 7:
 					tableTable.hero += 1
 
-	if ((drawingCard.type == Master.cardTypes.sword and tableTable.holdable < 2) or deckHasOnly("sword")) or ((drawingCard.type == Master.cardTypes.shield and tableTable.holdable < 2) or deckHasOnly("shield")) or ((drawingCard.type == Master.cardTypes.potion and tableTable.potion < 2) or deckHasOnly("potion")) or ((drawingCard.type == Master.cardTypes.coin and tableTable.coin < 2) or deckHasOnly("coin")) or ((drawingCard.type == Master.cardTypes.monster and tableTable.monster < 2) or deckHasOnly("monster")) or ((drawingCard.type == Master.cardTypes.special and tableTable.special < 2) or deckHasOnly("special")) or ((drawingCard.type == Master.cardTypes.hero and tableTable.hero < 2) or deckHasOnly("hero")):
+	if (((drawingCard.type == Master.cardTypes.sword or drawingCard.type == Master.cardTypes.shield) and tableTable.holdable < 2) or deckHasOnly("holdable")) or ((drawingCard.type == Master.cardTypes.potion and tableTable.potion < 2) or deckHasOnly("potion")) or ((drawingCard.type == Master.cardTypes.coin and tableTable.coin < 2) or deckHasOnly("coin")) or ((drawingCard.type == Master.cardTypes.monster and tableTable.monster < 2) or deckHasOnly("monster")) or ((drawingCard.type == Master.cardTypes.special and tableTable.special < 2) or deckHasOnly("special")) or ((drawingCard.type == Master.cardTypes.hero and tableTable.hero < 2) or deckHasOnly("hero")):
 		table.append(drawingCard)
 		var new_card = pre_card.instance()
 		new_card.visible = false
@@ -117,11 +117,14 @@ func draw():
 		var _childCounter = 0
 		for slot in $table.get_children():
 			if slot.get_child_count() == 0:
+#				if new_card.get_parent() != null:
+#					new_card.get_parent().remove_child(new_card)
 				slot.add_child(new_card)
 				_childCounter = $table.get_child_count()
 		deck.deckList.pop_front()
 		updateLabel()
 		new_card.get_node("AnimationPlayer").play("fadeIn")
+		Master.playAudio("draw.wav")
 		return new_card
 	else:
 		shuffleDeck()
@@ -142,8 +145,12 @@ func canPlay():
 
 func deckHasOnly(_type):
 	for card in deck.deckList:
-		if card.type != Master.cardTypes[_type]:
-			return false
+		if _type != "holdable":
+			if card.type != Master.cardTypes[_type]:
+				return false
+		else:
+			if card.type != Master.cardTypes["sword"] and card.type != Master.cardTypes["shield"]:
+				return false
 	return true
 
 func checkTable():
@@ -180,12 +187,7 @@ func clearTable():
 				$leftHand.free = true
 
 func tableSetup():	
-	var outOfTableSlots = [Master.colliderTypes.rightHand, Master.colliderTypes.leftHand, Master.colliderTypes.bag]
 	if table.size() <= 1:
-		for slot in outOfTableSlots:
-			for item in get_node(slot).get_children():
-				if(item.has_method("_on_Card_area_entered")):
-					checkBeforeDestroy(item)
 		while table.size() < 4 and deck.deckList.size() > 0:
 			var new_card = draw()
 			yield(new_card.get_node("AnimationPlayer"), "animation_finished")
@@ -226,22 +228,15 @@ func loadPlayer():
 	obj_player.stats = stats
 	obj_player.show_behind_parent = true
 
-func _on_Draw_released():
-	draw()
-
-func _on_Discard_released():
-	if(table.size() > 0):
-		pass
-
 func monsterAttackPlayer(monster):
 	animationHandler.visible = true
 	animationHandler.global_position = $player.global_position
 	animationHandler.frame = 0
 	animationHandler.play("damage")
+#if monster.stats.value >= 6:
 	Master.playAudio("highMonsAttack.wav")
-#	if monster.stats.value >= 6:
-#	else:
-#		Master.playAudio("lowMonsAttack.wav")
+#else:
+#	Master.playAudio("lowMonsAttack.wav")
 	yield(animationHandler, "animation_finished")
 	animationHandler.visible = false
 	obj_player.get_node("AnimationPlayer").play("receiveDmg")
