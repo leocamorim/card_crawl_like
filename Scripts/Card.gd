@@ -14,7 +14,10 @@ var inBag = false
 
 func _process(delta):
 	if dragMouse and dealer.canPlay():
+		set_z_index(10)
 		set_global_position(get_viewport().get_mouse_position())
+	else:
+		set_z_index(0)
 
 func _on_Card_input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton:
@@ -101,13 +104,6 @@ func monsterOnShield(_monster, _shield = self):
 	_monster.stats.value = 0
 	dealer.removeFromTable(_monster)
 	dealer.checkBeforeDestroy(_shield)
-
-func reparent(new_parent):
-	dealer.table.remove(dealer.table.find(self.stats))
-	self.get_parent().remove_child(self)
-	new_parent.add_child(self)
-	new_parent.get_children()[1].set_global_position(new_parent.global_position)
-	dealer.tableSetup()
 
 func statsChanged(_newStats):
 	stats = _newStats

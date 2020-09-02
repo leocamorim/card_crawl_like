@@ -29,7 +29,7 @@ func _process(delta):
 		Ss.data.coins += Master.lastRunCoins
 		Ss.saveGame()
 		yield(obj_player.get_node("AnimationPlayer"), "animation_finished")
-		Master.playAudio("defeat.ogg")
+		Master.playAudio("defeat.wav")
 		Master.moveToScene("DefeatScreen")
 	checkTable()
 #	var aux = Engine.get_frames_per_second()
