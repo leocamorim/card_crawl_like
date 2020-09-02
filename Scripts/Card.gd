@@ -20,7 +20,6 @@ func _process(delta):
 func _on_Card_input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton:
 		if event.is_pressed() and dealer.canPlay():
-#			print("dragged")
 			safePosition = global_position
 			dragMouse = true
 			Master.isDragin = true
@@ -43,10 +42,8 @@ func mouseReleased(dragging):
 		var height = $img.texture.get_height() * transform.get_scale().y
 		if get_viewport().get_mouse_position().x > global_position.x - width/2 and get_viewport().get_mouse_position().x < global_position.x + width/2 and get_viewport().get_mouse_position().y > global_position.y - height/2 and get_viewport().get_mouse_position().y < global_position.y + height/2:
 			if dragging.inHand and stats.type == Master.cardTypes.monster and dragging.stats.type == Master.cardTypes.sword:
-#				print("attacking monster")
 				swordOnMonster(dragging)
 			if inHand and stats.type == Master.cardTypes.shield and dragging.stats.type == Master.cardTypes.monster:
-#				print("monster attacking shield")
 				monsterOnShield(dragging)
 				pass
 	else:
@@ -59,16 +56,15 @@ func useOnPlayer():
 		set_global_position(safePosition)
 
 func swordOnMonster(_sword, _monster = self):
-	dealer.canPlay = false
 	dealer.animationHandler.visible = true
 	dealer.animationHandler.global_position = global_position
 	dealer.animationHandler.frame = 0
 	dealer.animationHandler.play("damage")
+	Master.playAudio("sword.wav")
 	yield(dealer.animationHandler, "animation_finished")
 	dealer.animationHandler.visible = false
 	$AnimationPlayer.play("receiveDmg")
 	yield($AnimationPlayer, "animation_finished")
-	dealer.canPlay = true
 	_monster.stats.value -= _sword.stats.value
 	dealer.popTicket("-" + str(_sword.stats.value), _monster)
 	_sword.stats.value = 0
@@ -77,14 +73,15 @@ func swordOnMonster(_sword, _monster = self):
 		dealer.checkBeforeDestroy(_monster)
 
 func monsterOnShield(_monster, _shield = self):
-	dealer.canPlay = false
 	dealer.animationHandler.visible = true
 	dealer.animationHandler.global_position = global_position
 	dealer.animationHandler.frame = 0
 	dealer.animationHandler.play("damage")
+	Master.playAudio("shield.wav")
+	if _monster.stats.value > _shield.stats.value:
+		Master.playAudio("highMonsAttack.wav")
 	yield(dealer.animationHandler, "animation_finished")
 	if _monster.stats.value > _shield.stats.value:
-		dealer.canPlay = false
 		dealer.animationHandler.visible = true
 		dealer.animationHandler.global_position = dealer.obj_player.global_position
 		dealer.animationHandler.frame = 0
@@ -102,7 +99,6 @@ func monsterOnShield(_monster, _shield = self):
 		_shield.stats.value -= _monster.stats.value
 		dealer.popTicket("-" + str(_monster.stats.value), _shield)
 	dealer.animationHandler.visible = false
-	dealer.canPlay = true
 	_monster.stats.value = 0
 	dealer.removeFromTable(_monster)
 	dealer.checkBeforeDestroy(_shield)

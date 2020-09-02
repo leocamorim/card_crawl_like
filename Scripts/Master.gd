@@ -57,7 +57,7 @@ func playAudio(_name, _type = "sfx"):
 		self.add_child(player)
 		player.stream = load('res://Assets/Audio/' + _name)
 		if _type == "bgm":
-			player.volume_db = -5
+			player.volume_db = 5
 		player.play()
 		if _type == "bgm":
 			if bgmAudio and bgmAudio.playing:

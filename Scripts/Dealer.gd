@@ -6,7 +6,6 @@ var deck = {
 }
 var table = []
 var obj_player
-var canPlay = true
 var runCoins = 0
 
 onready var pre_card = preload("res://Scenes/Card.tscn")
@@ -24,7 +23,7 @@ func _ready():
 	tableSetup()
 
 func _process(delta):
-	if !obj_player.get_node("AnimationPlayer").is_playing() and obj_player.stats.life <= 0 and canPlay:
+	if !obj_player.get_node("AnimationPlayer").is_playing() and obj_player.stats.life <= 0 and canPlay():
 		obj_player.get_node("AnimationPlayer").play("dead")
 		Master.lastRunCoins = runCoins
 		Ss.data.coins += Master.lastRunCoins
@@ -38,8 +37,6 @@ func _process(delta):
 #		print(aux)
 
 func draw():
-#	print("draw new card")
-#	if canPlay() and table.size() < 4 and deck.deckList.size() > 0:
 	var drawingCard = deck.deckList.front()
 	var tableTable = {
 		sword = 0,
@@ -66,7 +63,6 @@ func draw():
 				tableTable.special += 1
 			if card.type == 7:
 				tableTable.hero += 1
-#	print(tableTable)
 
 	if ((drawingCard.type == Master.cardTypes.sword and tableTable.sword < 2) or deckHasOnly("sword")) or ((drawingCard.type == Master.cardTypes.shield and tableTable.shield < 2) or deckHasOnly("shield")) or ((drawingCard.type == Master.cardTypes.potion and tableTable.potion < 2) or deckHasOnly("potion")) or ((drawingCard.type == Master.cardTypes.coin and tableTable.coin < 2) or deckHasOnly("coin")) or ((drawingCard.type == Master.cardTypes.monster and tableTable.monster < 2) or deckHasOnly("monster")) or ((drawingCard.type == Master.cardTypes.special and tableTable.special < 2) or deckHasOnly("special")) or ((drawingCard.type == Master.cardTypes.hero and tableTable.hero < 2) or deckHasOnly("hero")):
 		table.append(drawingCard)
@@ -95,7 +91,7 @@ func canPlay():
 		if slot.get_children().size() > 0:
 			if !slot.get_children()[0].is_in_group("ticket") and slot.get_children()[0].get_node("AnimationPlayer").is_playing():
 				return false
-	if obj_player.get_node("AnimationPlayer").is_playing():
+	if obj_player.get_node("AnimationPlayer").is_playing() or $AnimationPlayer.is_playing():
 		return false
 	return true
 
@@ -118,7 +114,6 @@ func checkTable():
 			Master.lastRunCoins = runCoins
 			Ss.data.coins += Master.lastRunCoins
 			Ss.saveGame()
-#			print("YOU WIN")
 			Master.moveToScene("WinScreen")
 
 func clearTable():
@@ -193,53 +188,31 @@ func _on_Discard_released():
 		pass
 
 func monsterAttackPlayer(monster):
-#	playAnimation()
-	canPlay = false
 	animationHandler.visible = true
 	animationHandler.global_position = $player.global_position
 	animationHandler.frame = 0
 	animationHandler.play("damage")
+	Master.playAudio("highMonsAttack.wav")
+#	if monster.stats.value >= 6:
+#	else:
+#		Master.playAudio("lowMonsAttack.wav")
 	yield(animationHandler, "animation_finished")
 	animationHandler.visible = false
 	obj_player.get_node("AnimationPlayer").play("receiveDmg")
 	yield(obj_player.get_node("AnimationPlayer"), "animation_finished")
-	canPlay = true
 	obj_player.stats.life -= monster.stats.value
 	popTicket("-" + str(monster.stats.value))
 	monster.stats.value = 0
 	removeFromTable(monster)
 
-#func useBattleItem(item, monster):
-#	var originalValues = {
-#		item = int(item.stats.value),
-#		monster = int(monster.stats.value)
-#	}
-#	monster.stats.value -= originalValues.item
-#	if(item.stats.type == Master.cardTypes.sword):
-#		item.stats.value = 0
-#		checkBeforeDestroy(monster)
-#	elif(item.stats.type == Master.cardTypes.shield):
-#		item.stats.value -= originalValues.monster
-#		if(monster.stats.value > 0):
-#			monsterAttackPlayer(monster)
-#		else:
-#			checkBeforeDestroy(monster)
-#	checkBeforeDestroy(item)
-
 func sellCard(card):
 	removeFromTable(card, true)
-#	checkBeforeDestroy(card)
 
 func usePotionItem(item):
-#	playAnimation(obj_player.global_position, "heal")
-	canPlay = false
-	animationHandler.visible = true
-	animationHandler.global_position = $player.global_position
-	animationHandler.frame = 0
-	animationHandler.play("heal")
-	yield(animationHandler, "animation_finished")
-	animationHandler.visible = false
-	canPlay = true
+	$AnimationPlayer.play("heal")
+	Master.playAudio("heartbeat.wav")
+	yield($AnimationPlayer, "animation_finished")
+	Master.playAudio("afterHeal.wav")
 	obj_player.stats.life += item.stats.value
 	if obj_player.stats.life > obj_player.stats.maxLife:
 		popTicket("+" + str(item.stats.value - (obj_player.stats.life - obj_player.stats.maxLife)))
@@ -247,18 +220,14 @@ func usePotionItem(item):
 	else:
 		popTicket("+" + str(item.stats.value))
 	item.stats.value = 0
-#	removeFromTable(item)
 
 func useCoinItem(item):
 	runCoins += item.stats.value
 	item.stats.value = 0
-#	removeFromTable(item)
 	updateLabel()
-#	print("Run Coins: "+str(runCoins))
 
 func checkBeforeDestroy(card, clear = false):
 	if card.stats.value <= 0:
-		canPlay = false
 		var anim = card.get_node("AnimationPlayer")
 		anim.play("fadeOut")
 		yield(anim, "animation_finished")
@@ -268,7 +237,6 @@ func checkBeforeDestroy(card, clear = false):
 			removeFromTable(card)
 		if clear or (card.stats.type != Master.cardTypes.monster and card.stats.type != Master.cardTypes.coin and card.stats.type != Master.cardTypes.potion):
 			card.get_parent().remove_child(card)
-		canPlay = true
 
 func removeFromTable(card, sell = false):
 	if !sell and card.stats.type != Master.cardTypes.monster:

@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/highMonsAttack.wav-16d0aadd705d3b24af8516e8f0715e81.sample"
+
+[deps]
+
+source_file="res://Assets/Audio/highMonsAttack.wav"
+dest_files=[ "res://.import/highMonsAttack.wav-16d0aadd705d3b24af8516e8f0715e81.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0
