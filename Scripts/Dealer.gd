@@ -39,8 +39,7 @@ func _process(delta):
 func draw():
 	var drawingCard = deck.deckList.front()
 	var tableTable = {
-		sword = 0,
-		shield = 0,
+		holdable = 0,
 		potion = 0,
 		coin = 0,
 		monster = 0,
@@ -49,10 +48,8 @@ func draw():
 	}
 	if table.size() > 0:
 		for card in table:
-			if card.type == 1:
-				tableTable.sword += 1
-			if card.type == 2:
-				tableTable.shield += 1
+			if card.type == 1 or card.type == 2:
+				tableTable.holdable += 1
 			if card.type == 3:
 				tableTable.potion += 1
 			if card.type == 4:
@@ -64,7 +61,55 @@ func draw():
 			if card.type == 7:
 				tableTable.hero += 1
 
-	if ((drawingCard.type == Master.cardTypes.sword and tableTable.sword < 2) or deckHasOnly("sword")) or ((drawingCard.type == Master.cardTypes.shield and tableTable.shield < 2) or deckHasOnly("shield")) or ((drawingCard.type == Master.cardTypes.potion and tableTable.potion < 2) or deckHasOnly("potion")) or ((drawingCard.type == Master.cardTypes.coin and tableTable.coin < 2) or deckHasOnly("coin")) or ((drawingCard.type == Master.cardTypes.monster and tableTable.monster < 2) or deckHasOnly("monster")) or ((drawingCard.type == Master.cardTypes.special and tableTable.special < 2) or deckHasOnly("special")) or ((drawingCard.type == Master.cardTypes.hero and tableTable.hero < 2) or deckHasOnly("hero")):
+	if $rightHand.get_children().size() > 0:
+		for card in $rightHand.get_children():
+			if card.is_in_group("card"):
+				if card.stats.type == 1 or card.stats.type == 2:
+					tableTable.holdable += 1
+				if card.stats.type == 3:
+					tableTable.potion += 1
+				if card.stats.type == 4:
+					tableTable.coin += 1
+				if card.stats.type == 5:
+					tableTable.monster += 1
+				if card.stats.type == 6:
+					tableTable.special += 1
+				if card.stats.type == 7:
+					tableTable.hero += 1
+
+	if $leftHand.get_children().size() > 0:
+		for card in $leftHand.get_children():
+			if card.is_in_group("card"):
+				if card.stats.type == 1 or card.stats.type == 2:
+					tableTable.holdable += 1
+				if card.stats.type == 3:
+					tableTable.potion += 1
+				if card.stats.type == 4:
+					tableTable.coin += 1
+				if card.stats.type == 5:
+					tableTable.monster += 1
+				if card.stats.type == 6:
+					tableTable.special += 1
+				if card.stats.type == 7:
+					tableTable.hero += 1
+
+	if $bag.get_children().size() > 0:
+		for card in $bag.get_children():
+			if card.is_in_group("card"):
+				if card.stats.type == 1 or card.stats.type == 2:
+					tableTable.holdable += 1
+				if card.stats.type == 3:
+					tableTable.potion += 1
+				if card.stats.type == 4:
+					tableTable.coin += 1
+				if card.stats.type == 5:
+					tableTable.monster += 1
+				if card.stats.type == 6:
+					tableTable.special += 1
+				if card.stats.type == 7:
+					tableTable.hero += 1
+
+	if ((drawingCard.type == Master.cardTypes.sword and tableTable.holdable < 2) or deckHasOnly("sword")) or ((drawingCard.type == Master.cardTypes.shield and tableTable.holdable < 2) or deckHasOnly("shield")) or ((drawingCard.type == Master.cardTypes.potion and tableTable.potion < 2) or deckHasOnly("potion")) or ((drawingCard.type == Master.cardTypes.coin and tableTable.coin < 2) or deckHasOnly("coin")) or ((drawingCard.type == Master.cardTypes.monster and tableTable.monster < 2) or deckHasOnly("monster")) or ((drawingCard.type == Master.cardTypes.special and tableTable.special < 2) or deckHasOnly("special")) or ((drawingCard.type == Master.cardTypes.hero and tableTable.hero < 2) or deckHasOnly("hero")):
 		table.append(drawingCard)
 		var new_card = pre_card.instance()
 		new_card.visible = false

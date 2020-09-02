@@ -44,7 +44,7 @@
 [ext_resource path="res://Assets/Animation/boss/1.png" type="Texture" id=42]
 [ext_resource path="res://Assets/Sprites/sell.png" type="Texture" id=43]
 
-[sub_resource type="SpriteFrames" id=4]
+[sub_resource type="SpriteFrames" id=1]
 animations = [ {
 "frames": [ ExtResource( 42 ), ExtResource( 39 ), ExtResource( 40 ), ExtResource( 41 ), ExtResource( 36 ), ExtResource( 37 ), ExtResource( 38 ) ],
 "loop": true,
@@ -52,7 +52,7 @@ animations = [ {
 "speed": 5.0
 } ]
 
-[sub_resource type="Animation" id=5]
+[sub_resource type="Animation" id=2]
 resource_name = "idle"
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:position")
@@ -67,7 +67,7 @@ tracks/0/keys = {
 "values": [ Vector2( 532.574, 1025.65 ), Vector2( 532.574, 961.746 ) ]
 }
 
-[sub_resource type="GDScript" id=6]
+[sub_resource type="GDScript" id=3]
 script/source = "extends AnimationPlayer
 
 func _ready():
@@ -82,12 +82,11 @@ func startAnim(back = false):
 	startAnim(!back)
 "
 
-[sub_resource type="DynamicFont" id=1]
+[sub_resource type="DynamicFont" id=4]
 size = 80
 font_data = ExtResource( 3 )
 
-[sub_resource type="Animation" id=3]
-resource_name = "heal"
+[sub_resource type="Animation" id=5]
 length = 1.55
 step = 0.05
 tracks/0/type = "value"
@@ -115,16 +114,16 @@ tracks/1/keys = {
 "values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
 }
 
-[sub_resource type="SpriteFrames" id=2]
+[sub_resource type="SpriteFrames" id=6]
 animations = [ {
-"frames": [ ExtResource( 7 ), ExtResource( 11 ), ExtResource( 12 ), ExtResource( 8 ), ExtResource( 10 ), ExtResource( 9 ), ExtResource( 13 ), ExtResource( 14 ) ],
-"loop": false,
-"name": "damage",
-"speed": 5.0
-}, {
 "frames": [ ExtResource( 21 ), ExtResource( 16 ), ExtResource( 17 ), ExtResource( 18 ), ExtResource( 19 ), ExtResource( 20 ), ExtResource( 25 ), ExtResource( 23 ), ExtResource( 27 ), ExtResource( 24 ), ExtResource( 26 ), ExtResource( 22 ), ExtResource( 30 ), ExtResource( 31 ), ExtResource( 28 ), ExtResource( 29 ), ExtResource( 32 ), ExtResource( 34 ), ExtResource( 33 ) ],
 "loop": false,
 "name": "heal",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 7 ), ExtResource( 11 ), ExtResource( 12 ), ExtResource( 8 ), ExtResource( 10 ), ExtResource( 9 ), ExtResource( 13 ), ExtResource( 14 ) ],
+"loop": false,
+"name": "damage",
 "speed": 5.0
 } ]
 
@@ -143,9 +142,9 @@ __meta__ = {
 [node name="boss" type="AnimatedSprite" parent="."]
 position = Vector2( 532.574, 773.127 )
 scale = Vector2( 0.664052, 0.664052 )
-frames = SubResource( 4 )
+frames = SubResource( 1 )
 animation = "idle"
-frame = 1
+frame = 4
 speed_scale = 1.5
 playing = true
 __meta__ = {
@@ -163,14 +162,14 @@ __meta__ = {
 [node name="AnimationPlayer" type="AnimationPlayer" parent="sell"]
 autoplay = "idle"
 playback_process_mode = 0
-anims/idle = SubResource( 5 )
-script = SubResource( 6 )
+anims/idle = SubResource( 2 )
+script = SubResource( 3 )
 
 [node name="Gold" type="Label" parent="."]
 margin_top = 1663.0
 margin_right = 1080.0
 margin_bottom = 1920.0
-custom_fonts/font = SubResource( 1 )
+custom_fonts/font = SubResource( 4 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "0 GOLD"
 align = 1
@@ -186,7 +185,7 @@ margin_left = 470.0
 margin_top = 60.0
 margin_right = 610.0
 margin_bottom = 150.0
-custom_fonts/font = SubResource( 1 )
+custom_fonts/font = SubResource( 4 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "40"
 align = 1
@@ -202,7 +201,7 @@ margin_left = 816.0
 margin_top = 343.0
 margin_right = 1018.0
 margin_bottom = 433.0
-custom_fonts/font = SubResource( 1 )
+custom_fonts/font = SubResource( 4 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "Sell"
 align = 1
@@ -282,12 +281,12 @@ __meta__ = {
 }
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-anims/heal = SubResource( 3 )
+anims/heal = SubResource( 5 )
 
 [node name="AnimationHandler" type="AnimatedSprite" parent="."]
 visible = false
 position = Vector2( 419.074, 1454.06 )
-frames = SubResource( 2 )
+frames = SubResource( 6 )
 animation = "heal"
 frame = 18
 speed_scale = 5.0
