@@ -70,12 +70,13 @@ func playAudio(_name, _type = "sfx"):
 			player.queue_free()
 
 func bgmChange(_keep = ""):
-	if _keep != "":
+	if _keep == "":
+		if bgmAudio:
+			bgmAudio.emit_signal("finished")
+	else:
 		if bgmAudio:
 			if bgmAudio.stream.resource_path != "res://Assets/Audio/" + _keep:
 				bgmAudio.emit_signal("finished")
 				playAudio(_keep, "bgm")
 		else:
 			playAudio(_keep, "bgm")
-	else:
-		bgmAudio.emit_signal("finished")

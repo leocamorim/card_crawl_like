@@ -222,6 +222,7 @@ func usePotionItem(item):
 	item.stats.value = 0
 
 func useCoinItem(item):
+	Master.playAudio("coin.wav")
 	runCoins += item.stats.value
 	item.stats.value = 0
 	updateLabel()
