@@ -11,7 +11,6 @@ var colliding
 var collidingGroup
 var inHand = false
 var inBag = false
-var isUsed = false
 
 func _process(delta):
 	if dragMouse and dealer.canPlay():

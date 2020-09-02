@@ -114,6 +114,7 @@ func checkTable():
 			Master.lastRunCoins = runCoins
 			Ss.data.coins += Master.lastRunCoins
 			Ss.saveGame()
+			Master.playAudio("victory.wav")
 			Master.moveToScene("WinScreen")
 
 func clearTable():
