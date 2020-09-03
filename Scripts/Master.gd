@@ -20,7 +20,7 @@ var bgmAudio
 
 func _ready():
 	Ss.loadGame()
-	playAudio("menuBgm.wav", "bgm")
+	playAudio("menuBgm.wav", 0, "bgm")
 
 func moveToScene(sceneName):
 	get_tree().change_scene("res://Scenes/"+sceneName+".tscn")
@@ -42,11 +42,13 @@ func getTypeName(_int):
 		if _int == cardTypes[key]:
 			return key
 
-func playAudio(_name, _type = "sfx"):
+func playAudio(_name, _volume = 0, _type = "sfx"):
 	if (_type == "sfx" and Ss.data["sfx"]) or (_type == "bgm" and Ss.data["bgm"]):
 		var player = AudioStreamPlayer.new()
 		self.add_child(player)
 		player.stream = load('res://Assets/Audio/' + _name)
+		if _volume:
+			player.volume_db = _volume
 		player.play()
 		if _type == "bgm":
 			if bgmAudio and bgmAudio.playing:
@@ -66,6 +68,6 @@ func bgmChange(_keep = ""):
 		if bgmAudio:
 			if bgmAudio.stream.resource_path != "res://Assets/Audio/" + _keep:
 				bgmAudio.emit_signal("finished")
-				playAudio(_keep, "bgm")
+				playAudio(_keep, 0, "bgm")
 		else:
-			playAudio(_keep, "bgm")
+			playAudio(_keep, 0, "bgm")

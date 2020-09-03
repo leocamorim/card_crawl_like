@@ -64,7 +64,15 @@ __meta__ = {
 "_edit_vertical_guides_": [ -540.0 ]
 }
 
+[node name="Sprite2" type="Sprite" parent="."]
+position = Vector2( 0, 2339.55 )
+scale = Vector2( 1, 1.21851 )
+texture = ExtResource( 2 )
+centered = false
+flip_v = true
+
 [node name="Sprite" type="Sprite" parent="."]
+scale = Vector2( 1, 1.21851 )
 texture = ExtResource( 2 )
 centered = false
 

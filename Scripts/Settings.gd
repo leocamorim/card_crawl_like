@@ -15,7 +15,7 @@ func _on_bgm_switch_released():
 	if !Ss.data["bgm"]:
 		Master.bgmChange()
 	else:
-		Master.playAudio("menuBgm.wav", "bgm")
+		Master.playAudio("menuBgm.wav", 0, "bgm")
 
 func _on_sfx_switch_released():
 	Ss.data["sfx"] = !Ss.data["sfx"]

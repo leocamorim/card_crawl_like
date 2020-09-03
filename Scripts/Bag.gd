@@ -15,6 +15,8 @@ func mouseReleased(dragging):
 			dragging.global_position = dragging.safePosition
 			if dragging.stats.type == Master.cardTypes.coin:
 				dragging.dealer.useCoinItem(dragging)
+			else:
+				Master.playAudio("backpack.wav", 20)
 
 func set_free():
 	free = true

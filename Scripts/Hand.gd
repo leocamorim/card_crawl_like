@@ -22,5 +22,7 @@ func mouseReleased(dragging):
 				dragging.inBag == false
 			if dragging.stats.type == Master.cardTypes.potion:
 				dragging.dealer.usePotionItem(dragging)
-			if dragging.stats.type == Master.cardTypes.coin:
+			elif dragging.stats.type == Master.cardTypes.coin:
 				dragging.dealer.useCoinItem(dragging)
+			else:
+				Master.playAudio("pickUp.wav", 10)

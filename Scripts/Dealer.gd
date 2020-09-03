@@ -108,8 +108,9 @@ func draw():
 					tableTable.special += 1
 				if card.stats.type == 7:
 					tableTable.hero += 1
-
-	if (((drawingCard.type == Master.cardTypes.sword or drawingCard.type == Master.cardTypes.shield) and tableTable.holdable < 2) or deckHasOnly("holdable")) or ((drawingCard.type == Master.cardTypes.potion and tableTable.potion < 2) or deckHasOnly("potion")) or ((drawingCard.type == Master.cardTypes.coin and tableTable.coin < 2) or deckHasOnly("coin")) or ((drawingCard.type == Master.cardTypes.monster and tableTable.monster < 2) or deckHasOnly("monster")) or ((drawingCard.type == Master.cardTypes.special and tableTable.special < 2) or deckHasOnly("special")) or ((drawingCard.type == Master.cardTypes.hero and tableTable.hero < 2) or deckHasOnly("hero")):
+	
+#	if (((drawingCard.type == Master.cardTypes.sword or drawingCard.type == Master.cardTypes.shield) and tableTable.holdable < 2) or deckHasOnly("holdable")) or ((drawingCard.type == Master.cardTypes.potion and tableTable.potion < 2) or deckHasOnly("potion")) or ((drawingCard.type == Master.cardTypes.coin and tableTable.coin < 2) or deckHasOnly("coin")) or ((drawingCard.type == Master.cardTypes.monster and tableTable.monster < 2) or deckHasOnly("monster")) or ((drawingCard.type == Master.cardTypes.special and tableTable.special < 2) or deckHasOnly("special")) or ((drawingCard.type == Master.cardTypes.hero and tableTable.hero < 2) or deckHasOnly("hero")):
+	if (((drawingCard.type == Master.cardTypes.sword or drawingCard.type == Master.cardTypes.shield) and tableTable.holdable < 2)) or ((drawingCard.type == Master.cardTypes.potion and tableTable.potion < 2)) or ((drawingCard.type == Master.cardTypes.coin and tableTable.coin < 2)) or ((drawingCard.type == Master.cardTypes.monster and tableTable.monster < 2)) or ((drawingCard.type == Master.cardTypes.special and tableTable.special < 2)) or ((drawingCard.type == Master.cardTypes.hero and tableTable.hero < 2)) or deckHasOnly2(tableTable):
 		table.append(drawingCard)
 		var new_card = pre_card.instance()
 		new_card.visible = false
@@ -125,6 +126,7 @@ func draw():
 		updateLabel()
 		new_card.get_node("AnimationPlayer").play("fadeIn")
 		Master.playAudio("draw.wav")
+		print(deckHasOnly2(tableTable))
 		return new_card
 	else:
 		shuffleDeck()
@@ -142,6 +144,28 @@ func canPlay():
 	if obj_player.get_node("AnimationPlayer").is_playing() or $AnimationPlayer.is_playing():
 		return false
 	return true
+
+func deckHasOnly2(_tableCount):
+	var _aux = []
+	if _tableCount.holdable >= 2:
+		_aux.append("holdable")
+	if _tableCount.potion >= 2:
+		_aux.append("potion")
+	if _tableCount.coin >= 2:
+		_aux.append("coin")
+	if _tableCount.monster >= 2:
+		_aux.append("monster")
+	if _tableCount.special >= 2:
+		_aux.append("special")
+	if _tableCount.hero >= 2:
+		_aux.append("hero")
+
+	var _counter = 0
+	for type in _aux:
+		if deckHasOnly(type):
+			_counter += 1
+
+	return !(_counter == _aux.size())
 
 func deckHasOnly(_type):
 	for card in deck.deckList:
@@ -166,7 +190,7 @@ func checkTable():
 			Master.lastRunCoins = runCoins
 			Ss.data.coins += Master.lastRunCoins
 			Ss.saveGame()
-			Master.playAudio("victory.wav")
+			Master.playAudio("victory.wav", -5)
 			Master.moveToScene("WinScreen")
 
 func clearTable():
@@ -251,7 +275,7 @@ func sellCard(card):
 
 func usePotionItem(item):
 	$AnimationPlayer.play("heal")
-	Master.playAudio("heartbeat.wav")
+	Master.playAudio("heartbeat.wav", 10)
 	yield($AnimationPlayer, "animation_finished")
 	Master.playAudio("afterHeal.wav")
 	obj_player.stats.life += item.stats.value
