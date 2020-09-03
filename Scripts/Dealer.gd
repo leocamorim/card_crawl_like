@@ -61,37 +61,37 @@ func draw():
 			if card.type == 7:
 				tableTable.hero += 1
 
-	if $rightHand.get_children().size() > 0:
-		for card in $rightHand.get_children():
-			if card.is_in_group("card"):
-				if card.stats.type == 1 or card.stats.type == 2:
-					tableTable.holdable += 1
-				if card.stats.type == 3:
-					tableTable.potion += 1
-				if card.stats.type == 4:
-					tableTable.coin += 1
-				if card.stats.type == 5:
-					tableTable.monster += 1
-				if card.stats.type == 6:
-					tableTable.special += 1
-				if card.stats.type == 7:
-					tableTable.hero += 1
-
-	if $leftHand.get_children().size() > 0:
-		for card in $leftHand.get_children():
-			if card.is_in_group("card"):
-				if card.stats.type == 1 or card.stats.type == 2:
-					tableTable.holdable += 1
-				if card.stats.type == 3:
-					tableTable.potion += 1
-				if card.stats.type == 4:
-					tableTable.coin += 1
-				if card.stats.type == 5:
-					tableTable.monster += 1
-				if card.stats.type == 6:
-					tableTable.special += 1
-				if card.stats.type == 7:
-					tableTable.hero += 1
+#	if $rightHand.get_children().size() > 0:
+#		for card in $rightHand.get_children():
+#			if card.is_in_group("card"):
+#				if card.stats.type == 1 or card.stats.type == 2:
+#					tableTable.holdable += 1
+#				if card.stats.type == 3:
+#					tableTable.potion += 1
+#				if card.stats.type == 4:
+#					tableTable.coin += 1
+#				if card.stats.type == 5:
+#					tableTable.monster += 1
+#				if card.stats.type == 6:
+#					tableTable.special += 1
+#				if card.stats.type == 7:
+#					tableTable.hero += 1
+#
+#	if $leftHand.get_children().size() > 0:
+#		for card in $leftHand.get_children():
+#			if card.is_in_group("card"):
+#				if card.stats.type == 1 or card.stats.type == 2:
+#					tableTable.holdable += 1
+#				if card.stats.type == 3:
+#					tableTable.potion += 1
+#				if card.stats.type == 4:
+#					tableTable.coin += 1
+#				if card.stats.type == 5:
+#					tableTable.monster += 1
+#				if card.stats.type == 6:
+#					tableTable.special += 1
+#				if card.stats.type == 7:
+#					tableTable.hero += 1
 
 	if $bag.get_children().size() > 0:
 		for card in $bag.get_children():
@@ -109,8 +109,8 @@ func draw():
 				if card.stats.type == 7:
 					tableTable.hero += 1
 	
-#	if (((drawingCard.type == Master.cardTypes.sword or drawingCard.type == Master.cardTypes.shield) and tableTable.holdable < 2) or deckHasOnly("holdable")) or ((drawingCard.type == Master.cardTypes.potion and tableTable.potion < 2) or deckHasOnly("potion")) or ((drawingCard.type == Master.cardTypes.coin and tableTable.coin < 2) or deckHasOnly("coin")) or ((drawingCard.type == Master.cardTypes.monster and tableTable.monster < 2) or deckHasOnly("monster")) or ((drawingCard.type == Master.cardTypes.special and tableTable.special < 2) or deckHasOnly("special")) or ((drawingCard.type == Master.cardTypes.hero and tableTable.hero < 2) or deckHasOnly("hero")):
-	if (((drawingCard.type == Master.cardTypes.sword or drawingCard.type == Master.cardTypes.shield) and tableTable.holdable < 2)) or ((drawingCard.type == Master.cardTypes.potion and tableTable.potion < 2)) or ((drawingCard.type == Master.cardTypes.coin and tableTable.coin < 2)) or ((drawingCard.type == Master.cardTypes.monster and tableTable.monster < 2)) or ((drawingCard.type == Master.cardTypes.special and tableTable.special < 2)) or ((drawingCard.type == Master.cardTypes.hero and tableTable.hero < 2)) or deckHasOnly2(tableTable):
+	if (((drawingCard.type == Master.cardTypes.sword or drawingCard.type == Master.cardTypes.shield) and tableTable.holdable < 2) or deckHasOnly("holdable")) or ((drawingCard.type == Master.cardTypes.potion and tableTable.potion < 2) or deckHasOnly("potion")) or ((drawingCard.type == Master.cardTypes.coin and tableTable.coin < 2) or deckHasOnly("coin")) or ((drawingCard.type == Master.cardTypes.monster and tableTable.monster < 2) or deckHasOnly("monster")) or ((drawingCard.type == Master.cardTypes.special and tableTable.special < 2) or deckHasOnly("special")) or ((drawingCard.type == Master.cardTypes.hero and tableTable.hero < 2) or deckHasOnly("hero")):
+#	if (((drawingCard.type == Master.cardTypes.sword or drawingCard.type == Master.cardTypes.shield) and tableTable.holdable < 2)) or ((drawingCard.type == Master.cardTypes.potion and tableTable.potion < 2)) or ((drawingCard.type == Master.cardTypes.coin and tableTable.coin < 2)) or ((drawingCard.type == Master.cardTypes.monster and tableTable.monster < 2)) or ((drawingCard.type == Master.cardTypes.special and tableTable.special < 2)) or ((drawingCard.type == Master.cardTypes.hero and tableTable.hero < 2)) or deckHasOnly2(tableTable):
 		table.append(drawingCard)
 		var new_card = pre_card.instance()
 		new_card.visible = false
