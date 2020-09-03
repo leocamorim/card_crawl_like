@@ -55,6 +55,7 @@ func _on_bt_desc_released():
 
 func _on_bt_credits_released():
 	get_parent().get_node(\"BtCredits/Label\").rect_position.y -= 30
+	Master.moveToScene(\"Credits\")
 "
 
 [node name="Menu" type="Node2D"]

@@ -1,0 +1,169 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://Assets/Hud/white-bg.png" type="Texture" id=1]
+[ext_resource path="res://Assets/Fonts/gutter/Gutter Regular.otf" type="DynamicFontData" id=2]
+[ext_resource path="res://Assets/Hud/buttonUp.png" type="Texture" id=3]
+[ext_resource path="res://Assets/Hud/buttonDown.png" type="Texture" id=4]
+
+[sub_resource type="DynamicFont" id=1]
+size = 150
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 75
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=4]
+size = 50
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=5]
+size = 100
+font_data = ExtResource( 2 )
+
+[sub_resource type="GDScript" id=3]
+script/source = "extends Node
+
+func _on_TouchScreenButton_pressed():
+	get_parent().get_node(\"BtBack/Label\").rect_position.y += 40
+
+func _on_TouchScreenButton_released():
+	Master.moveToScene(\"Menu\")
+"
+
+[node name="Credits" type="Node2D"]
+__meta__ = {
+"_edit_vertical_guides_": [ 539.885 ]
+}
+
+[node name="white-bg" type="Sprite" parent="."]
+texture = ExtResource( 1 )
+centered = false
+
+[node name="Title" type="Label" parent="."]
+margin_top = 110.998
+margin_right = 1080.0
+margin_bottom = 257.998
+custom_fonts/font = SubResource( 1 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "CREDITS"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LitTitle" type="Label" parent="."]
+margin_top = 358.753
+margin_right = 1080.0
+margin_bottom = 456.753
+custom_fonts/font = SubResource( 2 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Game design"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="."]
+margin_top = 456.753
+margin_right = 1080.0
+margin_bottom = 559.753
+custom_fonts/font = SubResource( 4 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Leonardo Cassani de Amorim
+Felipe Lages Stefenoni"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LitTitle2" type="Label" parent="."]
+margin_top = 692.107
+margin_right = 1080.0
+margin_bottom = 790.107
+custom_fonts/font = SubResource( 2 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Programming"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label2" type="Label" parent="."]
+margin_top = 790.107
+margin_right = 1080.0
+margin_bottom = 840.107
+custom_fonts/font = SubResource( 4 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Leonardo Cassani de Amorim"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LitTitle3" type="Label" parent="."]
+margin_top = 987.364
+margin_right = 1080.0
+margin_bottom = 1085.36
+custom_fonts/font = SubResource( 2 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Art"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label3" type="Label" parent="."]
+margin_top = 1085.36
+margin_right = 1080.0
+margin_bottom = 1135.36
+custom_fonts/font = SubResource( 4 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Felipe Lages Stefenoni"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label4" type="Label" parent="."]
+margin_top = 1291.12
+margin_right = 1080.0
+margin_bottom = 1394.12
+custom_fonts/font = SubResource( 4 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Suonatore di Liuto and Lord of the Land
+Kevin MacLeod (incompetech.com)"
+align = 1
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BtBack" type="TouchScreenButton" parent="."]
+position = Vector2( 286, 1539.28 )
+normal = ExtResource( 3 )
+pressed = ExtResource( 4 )
+
+[node name="Label" type="Label" parent="BtBack"]
+margin_left = 16.0
+margin_top = 14.0
+margin_right = 493.0
+margin_bottom = 142.0
+custom_fonts/font = SubResource( 5 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Back"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="EventHandler" type="Node" parent="."]
+script = SubResource( 3 )
+[connection signal="pressed" from="BtBack" to="EventHandler" method="_on_TouchScreenButton_pressed"]
+[connection signal="released" from="BtBack" to="EventHandler" method="_on_TouchScreenButton_released"]

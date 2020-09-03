@@ -35,7 +35,7 @@ func updateSwitches():
 		get_parent().get_node("sfx_switch").normal = pre_switchOff
 
 func _on_BtBack_pressed():
-	get_parent().get_node("BtBack/Label").rect_position.y += 30
+	get_parent().get_node("BtBack/Label").rect_position.y += 40
 	Master.playAudio("button.wav")
 
 func _on_BtBack_released():

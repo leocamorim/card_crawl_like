@@ -121,7 +121,7 @@ __meta__ = {
 }
 
 [node name="BtBack" type="TouchScreenButton" parent="."]
-position = Vector2( 286, 1510.29 )
+position = Vector2( 286, 1535.69 )
 normal = ExtResource( 4 )
 pressed = ExtResource( 3 )
 
