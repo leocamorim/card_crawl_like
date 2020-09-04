@@ -8,9 +8,9 @@ var table = []
 var obj_player
 var runCoins = 0
 
-onready var pre_card = preload("res://Scenes/Card.tscn")
-onready var pre_player = preload("res://Scenes/Player.tscn")
-onready var pre_ticket = preload("res://Scenes/Ticket.tscn")
+onready var pre_card = preload("res://Scenes/Components/Card.tscn")
+onready var pre_player = preload("res://Scenes/Components/Player.tscn")
+onready var pre_ticket = preload("res://Scenes/Components/Ticket.tscn")
 
 onready var animationHandler = $AnimationHandler
 

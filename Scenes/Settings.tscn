@@ -25,9 +25,6 @@ __meta__ = {
 }
 
 [node name="white-bg" type="Sprite" parent="."]
-visible = false
-position = Vector2( -879.421, -1555.92 )
-scale = Vector2( 2.62404, 2.62404 )
 texture = ExtResource( 1 )
 centered = false
 
