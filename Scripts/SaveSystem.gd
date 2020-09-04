@@ -10,6 +10,14 @@ var default_data = {
 
 var data = {}
 
+func hasSave():
+	var file = File.new()
+	
+	if file.file_exists(path):
+		return true
+	else:
+		return false
+
 func loadGame():
 	var file = File.new()
 	

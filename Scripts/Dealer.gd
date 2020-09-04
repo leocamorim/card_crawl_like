@@ -25,6 +25,7 @@ func _ready():
 	randomize()
 	if Master.isTutorial:
 		playTutorial()
+		$SellLabel.text = "Quit"
 	else:
 		loadPlayer()
 		loadDeck()
@@ -159,7 +160,7 @@ func playTutorial():
 	yield(self, "procceed")
 	$AnimationPlayer.stop(true)
 	$ClickSignal.visible = false
-
+	
 	tutorialStep = 4
 
 	writeChat("OH NO!\nAS HIS LAST CARD HE DRAWED HIMSELF!\nGRAB THAT SWORD AND ATTACK HIM TO WIN THIS MATCH!")
@@ -176,6 +177,7 @@ func playTutorial():
 	$AnimationPlayer.play("clickSignal")
 	yield(self, "procceed")
 
+	clearTable()
 	tutorialStep = 5
 
 	for slot in $table.get_children():
@@ -187,7 +189,9 @@ func playTutorial():
 
 	Master.lastRunCoins = 50
 	Ss.data["coins"] += Master.lastRunCoins
+	Ss.saveGame()
 	Master.isTutorial = false
+	Master.playAudio("victory.wav", -5)
 	Master.moveToScene("WinScreen")
 
 func writeChat(_text):

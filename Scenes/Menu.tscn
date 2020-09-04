@@ -7,19 +7,19 @@
 [ext_resource path="res://Assets/Hud/buttonUp.png" type="Texture" id=5]
 [ext_resource path="res://Assets/Hud/buttonDown.png" type="Texture" id=6]
 
-[sub_resource type="DynamicFont" id=6]
+[sub_resource type="DynamicFont" id=1]
 size = 60
 font_data = ExtResource( 4 )
 
-[sub_resource type="DynamicFont" id=7]
+[sub_resource type="DynamicFont" id=2]
 size = 60
 font_data = ExtResource( 4 )
 
-[sub_resource type="DynamicFont" id=8]
+[sub_resource type="DynamicFont" id=3]
 size = 60
 font_data = ExtResource( 4 )
 
-[sub_resource type="DynamicFont" id=9]
+[sub_resource type="DynamicFont" id=4]
 size = 100
 font_data = ExtResource( 3 )
 
@@ -34,7 +34,7 @@ func _on_bt_config_pressed():
 	get_parent().get_node(\"BtConfig/Label\").rect_position.y += 30
 	Master.playAudio(\"button.wav\")
 
-func _on_bt_desc_pressed():
+func _on_bt_help_pressed():
 	get_parent().get_node(\"BtHelp/Label\").rect_position.y += 30
 	Master.playAudio(\"button.wav\")
 
@@ -50,8 +50,10 @@ func _on_bt_config_released():
 	get_parent().get_node(\"BtConfig/Label\").rect_position.y -= 30
 	Master.moveToScene(\"Settings\")
 
-func _on_bt_desc_released():
+func _on_bt_help_released():
 	get_parent().get_node(\"BtHelp/Label\").rect_position.y -= 30
+	Master.isTutorial = true
+	Master.moveToScene(\"InGame\")
 
 func _on_bt_credits_released():
 	get_parent().get_node(\"BtCredits/Label\").rect_position.y -= 30
@@ -67,7 +69,6 @@ __meta__ = {
 [node name="NodeBg" type="Node2D" parent="."]
 
 [node name="Sprite" type="Sprite" parent="NodeBg"]
-scale = Vector2( 1, 1 )
 texture = ExtResource( 2 )
 centered = false
 
@@ -92,7 +93,7 @@ margin_left = 64.0
 margin_top = 13.0
 margin_right = 446.0
 margin_bottom = 122.0
-custom_fonts/font = SubResource( 6 )
+custom_fonts/font = SubResource( 1 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "Start"
 align = 1
@@ -116,7 +117,7 @@ margin_left = 64.0
 margin_top = 13.0
 margin_right = 446.0
 margin_bottom = 122.0
-custom_fonts/font = SubResource( 7 )
+custom_fonts/font = SubResource( 2 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "settings"
 align = 1
@@ -140,7 +141,7 @@ margin_left = 64.0
 margin_top = 13.0
 margin_right = 446.0
 margin_bottom = 122.0
-custom_fonts/font = SubResource( 8 )
+custom_fonts/font = SubResource( 3 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "HELP"
 align = 1
@@ -164,7 +165,7 @@ margin_left = 64.0
 margin_top = 13.0
 margin_right = 446.0
 margin_bottom = 122.0
-custom_fonts/font = SubResource( 8 )
+custom_fonts/font = SubResource( 3 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "CREDITS"
 align = 1
@@ -178,7 +179,7 @@ __meta__ = {
 margin_top = 1663.0
 margin_right = 1080.0
 margin_bottom = 1920.0
-custom_fonts/font = SubResource( 9 )
+custom_fonts/font = SubResource( 4 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "12345 gold"
 align = 1
@@ -193,7 +194,7 @@ script = SubResource( 5 )
 [connection signal="released" from="BtStart/bt_start" to="EventHandler" method="_on_bt_start_released"]
 [connection signal="pressed" from="BtConfig/bt_config" to="EventHandler" method="_on_bt_config_pressed"]
 [connection signal="released" from="BtConfig/bt_config" to="EventHandler" method="_on_bt_config_released"]
-[connection signal="pressed" from="BtHelp/bt_help" to="EventHandler" method="_on_bt_desc_pressed"]
-[connection signal="released" from="BtHelp/bt_help" to="EventHandler" method="_on_bt_desc_released"]
+[connection signal="pressed" from="BtHelp/bt_help" to="EventHandler" method="_on_bt_help_pressed"]
+[connection signal="released" from="BtHelp/bt_help" to="EventHandler" method="_on_bt_help_released"]
 [connection signal="pressed" from="BtCredits/bt_credits" to="EventHandler" method="_on_bt_credits_pressed"]
 [connection signal="released" from="BtCredits/bt_credits" to="EventHandler" method="_on_bt_credits_released"]
