@@ -14,6 +14,7 @@ func loadGame():
 	var file = File.new()
 	
 	if not file.file_exists(path):
+		Master.isTutorial = true
 		resetData()
 		return
 

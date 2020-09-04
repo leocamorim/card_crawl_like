@@ -18,15 +18,11 @@ var lastRunCoins = 0
 
 var bgmAudio
 
+var isTutorial = false
+
 func _ready():
 	Ss.loadGame()
 	playAudio("menuBgm.wav", 0, "bgm")
-
-func refitScreen(_node):
-	get_tree().get_root().connect("size_changed", self, "refitScreen")
-	print(get_viewport().size)
-	if get_viewport().size.y > 1920:
-		_node.transform.y -= (get_viewport().size.y - 1920)
 
 func moveToScene(sceneName):
 	get_tree().change_scene("res://Scenes/"+sceneName+".tscn")

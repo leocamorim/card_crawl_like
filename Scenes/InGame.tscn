@@ -1,7 +1,7 @@
-[gd_scene load_steps=50 format=2]
+[gd_scene load_steps=55 format=2]
 
 [ext_resource path="res://Scripts/Dealer.gd" type="Script" id=1]
-[ext_resource path="res://Assets/Sprites/campo-sem-boss-e-sell.png" type="Texture" id=2]
+[ext_resource path="res://Assets/Hud/campo-sem-boss-e-sell.png" type="Texture" id=2]
 [ext_resource path="res://Assets/Fonts/gutter/Gutter Regular.ttf" type="DynamicFontData" id=3]
 [ext_resource path="res://Scripts/Hand.gd" type="Script" id=4]
 [ext_resource path="res://Scripts/Bag.gd" type="Script" id=5]
@@ -43,6 +43,7 @@
 [ext_resource path="res://Assets/Animation/boss/4.png" type="Texture" id=41]
 [ext_resource path="res://Assets/Animation/boss/1.png" type="Texture" id=42]
 [ext_resource path="res://Assets/Sprites/sell.png" type="Texture" id=43]
+[ext_resource path="res://Assets/Fonts/gutter/Gutter Regular.otf" type="DynamicFontData" id=44]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -86,6 +87,70 @@ func startAnim(back = false):
 size = 80
 font_data = ExtResource( 3 )
 
+[sub_resource type="DynamicFont" id=7]
+size = 50
+font_data = ExtResource( 44 )
+
+[sub_resource type="DynamicFont" id=9]
+size = 70
+font_data = ExtResource( 44 )
+
+[sub_resource type="Animation" id=8]
+resource_name = "bossFadeIn"
+tracks/0/type = "value"
+tracks/0/path = NodePath("boss:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("boss:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=10]
+resource_name = "clickSignal"
+length = 2.0
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("ClickSignal:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("ClickSignal:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 1, 2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0.588235 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0.588235 ) ]
+}
+
 [sub_resource type="Animation" id=5]
 length = 1.55
 step = 0.05
@@ -116,14 +181,14 @@ tracks/1/keys = {
 
 [sub_resource type="SpriteFrames" id=6]
 animations = [ {
-"frames": [ ExtResource( 7 ), ExtResource( 11 ), ExtResource( 12 ), ExtResource( 8 ), ExtResource( 10 ), ExtResource( 9 ), ExtResource( 13 ), ExtResource( 14 ) ],
-"loop": false,
-"name": "damage",
-"speed": 5.0
-}, {
 "frames": [ ExtResource( 21 ), ExtResource( 16 ), ExtResource( 17 ), ExtResource( 18 ), ExtResource( 19 ), ExtResource( 20 ), ExtResource( 25 ), ExtResource( 23 ), ExtResource( 27 ), ExtResource( 24 ), ExtResource( 26 ), ExtResource( 22 ), ExtResource( 30 ), ExtResource( 31 ), ExtResource( 28 ), ExtResource( 29 ), ExtResource( 32 ), ExtResource( 34 ), ExtResource( 33 ) ],
 "loop": false,
 "name": "heal",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 7 ), ExtResource( 11 ), ExtResource( 12 ), ExtResource( 8 ), ExtResource( 10 ), ExtResource( 9 ), ExtResource( 13 ), ExtResource( 14 ) ],
+"loop": false,
+"name": "damage",
 "speed": 5.0
 } ]
 
@@ -140,6 +205,7 @@ __meta__ = {
 }
 
 [node name="boss" type="AnimatedSprite" parent="."]
+modulate = Color( 1, 1, 1, 0 )
 position = Vector2( 532.574, 773.127 )
 scale = Vector2( 0.664052, 0.664052 )
 frames = SubResource( 1 )
@@ -165,21 +231,6 @@ playback_process_mode = 0
 anims/idle = SubResource( 2 )
 script = SubResource( 3 )
 
-[node name="Gold" type="Label" parent="."]
-margin_top = 1663.0
-margin_right = 1080.0
-margin_bottom = 1920.0
-custom_fonts/font = SubResource( 4 )
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-text = "0 GOLD"
-align = 1
-valign = 1
-autowrap = true
-__meta__ = {
-"_edit_lock_": true,
-"_edit_use_anchors_": false
-}
-
 [node name="DeckLabel" type="Label" parent="."]
 margin_left = 470.0
 margin_top = 60.0
@@ -187,7 +238,6 @@ margin_right = 610.0
 margin_bottom = 150.0
 custom_fonts/font = SubResource( 4 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
-text = "40"
 align = 1
 valign = 1
 autowrap = true
@@ -209,6 +259,50 @@ valign = 1
 autowrap = true
 __meta__ = {
 "_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="Gold" type="Label" parent="."]
+margin_top = 1663.0
+margin_right = 1080.0
+margin_bottom = 1920.0
+custom_fonts/font = SubResource( 4 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "0 GOLD"
+align = 1
+valign = 1
+autowrap = true
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="Chat" type="Label" parent="."]
+margin_top = 626.0
+margin_right = 1073.0
+margin_bottom = 859.0
+custom_fonts/font = SubResource( 7 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+align = 1
+valign = 1
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ClickSignal" type="Label" parent="."]
+visible = false
+modulate = Color( 1, 1, 1, 0.588235 )
+margin_top = 1663.0
+margin_right = 1080.0
+margin_bottom = 1920.0
+custom_fonts/font = SubResource( 9 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Click to begin tutorial"
+align = 1
+valign = 1
+autowrap = true
+__meta__ = {
 "_edit_use_anchors_": false
 }
 
@@ -281,6 +375,8 @@ __meta__ = {
 }
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/bossFadeIn = SubResource( 8 )
+anims/clickSignal = SubResource( 10 )
 anims/heal = SubResource( 5 )
 
 [node name="AnimationHandler" type="AnimatedSprite" parent="."]

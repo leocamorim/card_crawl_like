@@ -14,27 +14,190 @@ onready var pre_ticket = preload("res://Scenes/Components/Ticket.tscn")
 
 onready var animationHandler = $AnimationHandler
 
+signal written
+signal clicked
+signal procceed
+
+var tutorialStep = 0
+
 func _ready():
 	Master.bgmChange("gameBgm.wav")
 	randomize()
-	loadPlayer()
-	loadDeck()
-	shuffleDeck()
-	tableSetup()
+	if Master.isTutorial:
+		playTutorial()
+	else:
+		loadPlayer()
+		loadDeck()
+		shuffleDeck()
+		tableSetup()
+	$AnimationPlayer.stop(true)
 
 func _process(delta):
-	if !obj_player.get_node("AnimationPlayer").is_playing() and obj_player.stats.life <= 0 and canPlay():
-#		Master.lastRunCoins = runCoins
-#		Ss.data.coins += Master.lastRunCoins
-#		Ss.saveGame()
-		obj_player.get_node("AnimationPlayer").play("dead")
-		yield(obj_player.get_node("AnimationPlayer"), "animation_finished")
-		Master.playAudio("defeat.wav")
-		Master.moveToScene("DefeatScreen")
+	if !Master.isTutorial:
+		if obj_player != null and !obj_player.get_node("AnimationPlayer").is_playing() and obj_player.stats.life <= 0 and canPlay():
+			obj_player.get_node("AnimationPlayer").play("dead")
+			yield(obj_player.get_node("AnimationPlayer"), "animation_finished")
+			Master.playAudio("defeat.wav")
+			Master.moveToScene("DefeatScreen")
 	checkTable()
+	if Master.isTutorial and Input.is_action_just_pressed("click"):
+		emit_signal("clicked")
+	if tutorialStep == 1:
+		if $rightHand.get_child_count() > 0 or $leftHand.get_child_count() > 0:
+			emit_signal("procceed")
+	elif tutorialStep == 2:
+		if obj_player.stats.life < 13:
+			emit_signal("procceed")
+	elif tutorialStep == 3:
+		if obj_player.stats.life >= 13:
+			emit_signal("procceed")
+	elif tutorialStep == 4:
+		if $rightHand.get_child_count() > 0 or $leftHand.get_child_count() > 0:
+			emit_signal("procceed")
+	elif tutorialStep == 5:
+		if table.size() <= 0 and deck.deckList.size() <= 0:
+			emit_signal("procceed")
+		elif obj_player.stats.life <= 0:
+			Master.isTutorial = false
+			Master.moveToScene("DefeatScreen")
 #	var aux = Engine.get_frames_per_second()
 #	if aux != 60:
 #		print(aux)
+
+func playTutorial():
+	$boss.visible = false
+	$sell.visible = false
+	$SellLabel.visible = false
+	$ClickSignal.visible = false
+	$Gold.visible = false
+	
+	
+	writeChat("Click anywhere to begin tutorial!")
+	yield(self, "written")
+	
+	$AnimationPlayer.play("clickSignal")
+	yield(self, "clicked")
+	Master.playAudio("button.wav")
+	$AnimationPlayer.stop(true)
+	$ClickSignal.visible = false
+	$ClickSignal.text = "Click to continue..."
+
+	loadPlayer()
+	obj_player.get_node("AnimationPlayer").play_backwards("dead")
+	yield(obj_player.get_node("AnimationPlayer"), "animation_finished")
+
+	writeChat("That handsome guy down there is you.\nIn card souls, your goal is simple:\n empty the dealer's souls deck without becoming a soul.")
+	yield(self, "written")
+
+	$AnimationPlayer.play("clickSignal")
+	yield(self, "clicked")
+	Master.playAudio("button.wav")
+	$AnimationPlayer.stop(true)
+	$ClickSignal.visible = false
+
+	$AnimationPlayer.play("bossFadeIn")
+	yield($AnimationPlayer, "animation_finished")
+
+	writeChat("But it's not as easy as it seems...\nThe Dealer has the strongest deck in all Hraesvelgr.\nFull of powerful monsters.")
+	yield(self, "written")
+
+	$AnimationPlayer.play("clickSignal")
+	yield(self, "clicked")
+	Master.playAudio("button.wav")
+	$AnimationPlayer.stop(true)
+	$ClickSignal.visible = false
+
+	loadDeck(true)
+	tableSetup()
+	$Timer.start(3)
+	yield($Timer, "timeout")
+
+	writeChat("What a bad luck! A monster on the first hand! Grab that shield and put it in your hand before that monster attacks you!")
+	yield(self, "written")
+	
+	for slot in $table.get_children():
+		for card in slot.get_children():
+			if card.is_in_group("card") and card.stats.type == Master.cardTypes["shield"]:
+				card.canMove = true
+
+	tutorialStep = 1
+
+	$ClickSignal.text = "Drag the shield to any of your hands"
+	$AnimationPlayer.play("clickSignal")
+	yield(self, "procceed")
+	$AnimationPlayer.stop(true)
+	$ClickSignal.visible = false
+
+	tutorialStep = 2
+
+	writeChat("Good! Now you can defend yourself from that monster's attack.")
+	yield(self, "written")
+	
+	for slot in $table.get_children():
+		for card in slot.get_children():
+			if card.is_in_group("card") and card.stats.type == Master.cardTypes["monster"]:
+				card.canMove = true
+
+	$ClickSignal.text = "Drag the monster to attack your shield"
+	$AnimationPlayer.play("clickSignal")
+	yield(self, "procceed")
+	$AnimationPlayer.stop(true)
+	$ClickSignal.visible = false
+
+	tutorialStep = 3
+
+	writeChat("Oh no! You are hurt!\nI guess that monster was too strong...\nDrink that potion to heal your wounds!")
+	yield(self, "written")
+
+	for slot in $table.get_children():
+		for card in slot.get_children():
+			if card.is_in_group("card") and card.stats.type == Master.cardTypes["potion"]:
+				card.canMove = true
+
+	$ClickSignal.text = "Drag the potion to your hand to use it"
+	$AnimationPlayer.play("clickSignal")
+	yield(self, "procceed")
+	$AnimationPlayer.stop(true)
+	$ClickSignal.visible = false
+
+	tutorialStep = 4
+
+	writeChat("OH NO!\nAS HIS LAST CARD HE DRAWED HIMSELF!\nGRAB THAT SWORD AND ATTACK HIM TO WIN THIS MATCH!")
+	yield(self, "written")
+
+	for slot in $table.get_children():
+		for card in slot.get_children():
+			if card.is_in_group("card") and card.stats.type == Master.cardTypes["sword"]:
+				card.canMove = true
+			else:
+				card.canMove = false
+
+	$ClickSignal.text = "Win this match"
+	$AnimationPlayer.play("clickSignal")
+	yield(self, "procceed")
+
+	tutorialStep = 5
+
+	for slot in $table.get_children():
+		for card in slot.get_children():
+			if card.is_in_group("card") and card.stats.type == Master.cardTypes["monster"]:
+				card.canMove = true
+
+	yield(self, "procceed")
+
+	Master.lastRunCoins = 50
+	Ss.data["coins"] += Master.lastRunCoins
+	Master.isTutorial = false
+	Master.moveToScene("WinScreen")
+
+func writeChat(_text):
+	$Chat.visible = true
+	$Chat.text = _text
+	if _text != "":
+		for i in range(0, _text.length()):
+			$Chat.visible_characters = i
+			yield(get_tree().create_timer(0.025), "timeout")
+		emit_signal("written")
 
 func draw():
 	var drawingCard = deck.deckList.front()
@@ -108,13 +271,19 @@ func draw():
 					tableTable.special += 1
 				if card.stats.type == 7:
 					tableTable.hero += 1
-	
+
 	if (((drawingCard.type == Master.cardTypes.sword or drawingCard.type == Master.cardTypes.shield) and tableTable.holdable < 2) or deckHasOnly("holdable")) or ((drawingCard.type == Master.cardTypes.potion and tableTable.potion < 2) or deckHasOnly("potion")) or ((drawingCard.type == Master.cardTypes.coin and tableTable.coin < 2) or deckHasOnly("coin")) or ((drawingCard.type == Master.cardTypes.monster and tableTable.monster < 2) or deckHasOnly("monster")) or ((drawingCard.type == Master.cardTypes.special and tableTable.special < 2) or deckHasOnly("special")) or ((drawingCard.type == Master.cardTypes.hero and tableTable.hero < 2) or deckHasOnly("hero")):
 #	if (((drawingCard.type == Master.cardTypes.sword or drawingCard.type == Master.cardTypes.shield) and tableTable.holdable < 2)) or ((drawingCard.type == Master.cardTypes.potion and tableTable.potion < 2)) or ((drawingCard.type == Master.cardTypes.coin and tableTable.coin < 2)) or ((drawingCard.type == Master.cardTypes.monster and tableTable.monster < 2)) or ((drawingCard.type == Master.cardTypes.special and tableTable.special < 2)) or ((drawingCard.type == Master.cardTypes.hero and tableTable.hero < 2)) or deckHasOnly2(tableTable):
 		table.append(drawingCard)
 		var new_card = pre_card.instance()
 		new_card.visible = false
 		new_card.stats = drawingCard
+		if Master.isTutorial:
+			new_card.canMove = false
+			if new_card.stats.value == 10:
+				new_card.stats.value = 15
+			if new_card.stats.value == 7:
+				new_card.stats.value = 15
 		var _childCounter = 0
 		for slot in $table.get_children():
 			if slot.get_child_count() == 0:
@@ -126,13 +295,14 @@ func draw():
 		updateLabel()
 		new_card.get_node("AnimationPlayer").play("fadeIn")
 		Master.playAudio("draw.wav")
-		print(deckHasOnly2(tableTable))
 		return new_card
 	else:
 		shuffleDeck()
 		return draw()
 
 func canPlay():
+	if Master.isTutorial:
+		return true
 	if !$Timer.is_stopped():
 		return false
 	if $AnimationHandler.visible == true:
@@ -180,13 +350,16 @@ func deckHasOnly(_type):
 func checkTable():
 	if deck.deckList.size() > 0 and table.size() == 1 and canPlay() and $Timer.is_stopped():
 		clearTable()
-		$Timer.start(1)
+		if !Master.isTutorial:
+			$Timer.start(1)
+		else:
+			$Timer.start(1.6)
 		yield($Timer, "timeout")
 		while(deck.deckList.size() > 0 and table.size() < 4):
 			var new_card = draw()
 			yield(new_card.get_node("AnimationPlayer"), "animation_finished")
-	elif table.size() <= 0:
-		if obj_player.stats.life > 0:
+	elif !Master.isTutorial and table.size() <= 0:
+		if obj_player != null and obj_player.stats.life > 0:
 			Master.lastRunCoins = runCoins
 			Ss.data.coins += Master.lastRunCoins
 			Ss.saveGame()
@@ -220,18 +393,20 @@ func updateLabel():
 	$Gold.text = str(runCoins) + " GOLD"
 	$DeckLabel.text = str(deck.deckList.size())
 
-
 func shuffleDeck():
 	randomize()
 	deck.deckList.shuffle()
 
-func loadDeck():
+func loadDeck(_isTutorial = false):
 	cardList = Master.readJSON("cardDB")
 	Master.decks.shuffle()
-	deck = Master.readJSON(Master.decks[0])
+	if _isTutorial:
+		deck = Master.readJSON("tutorialDeck")
+	else:
+		deck = Master.readJSON(Master.decks[0])
 	var deckList = [];
-	for card in cardList:
-		for cardId in deck.deckList:
+	for cardId in deck.deckList:
+		for card in cardList:
 			if(card.id == cardId):
 				deckList.append(card.duplicate())
 	deck.deckList = deckList;
@@ -251,6 +426,7 @@ func loadPlayer():
 	obj_player.position = Vector2()
 	obj_player.stats = stats
 	obj_player.show_behind_parent = true
+	obj_player.get_node("AnimationPlayer").play_backwards("dead")
 
 func monsterAttackPlayer(monster):
 	animationHandler.visible = true

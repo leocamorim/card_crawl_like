@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/campo-sem-boss-e-sell.png-5d245287acd5e8819f0533447095d553.stex"
+path="res://.import/campo-sem-boss-e-sell.png-48525ad9b9a02ff0ee17a94214593988.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Sprites/campo-sem-boss-e-sell.png"
-dest_files=[ "res://.import/campo-sem-boss-e-sell.png-5d245287acd5e8819f0533447095d553.stex" ]
+source_file="res://Assets/Hud/campo-sem-boss-e-sell.png"
+dest_files=[ "res://.import/campo-sem-boss-e-sell.png-48525ad9b9a02ff0ee17a94214593988.stex" ]
 
 [params]
 

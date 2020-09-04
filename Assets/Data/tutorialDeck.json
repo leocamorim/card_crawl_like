@@ -1,0 +1,8 @@
+{
+	"id": 0,
+	"name": "Tutorial Deck",
+	"desc": "Deck used on the tutorial",
+	"deckList": [
+		36, 1, 12, 18, 31
+	]
+}

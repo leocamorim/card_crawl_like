@@ -130,8 +130,6 @@ tracks/1/keys = {
 [node name="Card" type="Area2D" groups=[
 "card",
 ]]
-modulate = Color( 1, 1, 1, 0 )
-position = Vector2( 0, -25 )
 scale = Vector2( 0.5, 0.5 )
 script = ExtResource( 2 )
 

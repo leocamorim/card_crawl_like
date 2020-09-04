@@ -4,6 +4,7 @@ onready var obj_name = get_node("name")
 onready var obj_value = get_node("value")
 onready var dealer = get_parent().get_parent().get_parent()
 onready var overlay = $overlay
+var canMove = true
 var dragMouse = false
 var stats setget statsChanged
 var safePosition = Vector2(0,0)
@@ -20,7 +21,7 @@ func _process(delta):
 		set_z_index(0)
 
 func _on_Card_input_event(viewport, event, shape_idx):
-	if event is InputEventMouseButton:
+	if canMove and event is InputEventMouseButton:
 		if event.is_pressed() and dealer.canPlay():
 			safePosition = global_position
 			dragMouse = true
