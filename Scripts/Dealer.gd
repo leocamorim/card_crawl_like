@@ -25,7 +25,6 @@ func _ready():
 	randomize()
 	if Master.isTutorial:
 		playTutorial()
-		$SellLabel.text = "Quit"
 	else:
 		loadPlayer()
 		loadDeck()
@@ -66,16 +65,18 @@ func _process(delta):
 #		print(aux)
 
 func playTutorial():
+	if !Ss.hasSave():
+		$BtClose.visible = false
+		$SellLabel.visible = false
+	$SellLabel.text = "Quit"
 	$boss.visible = false
 	$sell.visible = false
-	$SellLabel.visible = false
 	$ClickSignal.visible = false
 	$Gold.visible = false
-	
-	
+
 	writeChat("Click anywhere to begin tutorial!")
 	yield(self, "written")
-	
+
 	$AnimationPlayer.play("clickSignal")
 	yield(self, "clicked")
 	Master.playAudio("button.wav")
@@ -187,9 +188,12 @@ func playTutorial():
 
 	yield(self, "procceed")
 
-	Master.lastRunCoins = 50
-	Ss.data["coins"] += Master.lastRunCoins
-	Ss.saveGame()
+	if !Ss.hasSave():
+		Master.lastRunCoins = 50
+		Ss.data["coins"] += Master.lastRunCoins
+		Ss.saveGame()
+	else:
+		Master.lastRunCoins = 0
 	Master.isTutorial = false
 	Master.playAudio("victory.wav", -5)
 	Master.moveToScene("WinScreen")
@@ -507,3 +511,8 @@ func popTicket(text, parent = obj_player):
 	_ticket.scale = Vector2(2, 2)
 	_ticket.global_position = parent.global_position
 	_ticket.setText(text)
+
+
+func _on_BtClose_pressed():
+	Master.isTutorial = false
+	Master.moveToScene("Menu")
