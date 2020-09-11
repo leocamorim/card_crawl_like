@@ -26,6 +26,7 @@ func _ready():
 	if Master.isTutorial:
 		playTutorial()
 	else:
+		$boss.modulate.a = 1
 		loadPlayer()
 		loadDeck()
 		shuffleDeck()
@@ -412,12 +413,12 @@ func loadDeck(_isTutorial = false):
 		deck = Master.readJSON("tutorialDeck")
 	else:
 		deck = Master.readJSON(Master.decks[0])
-	var deckList = [];
+	var _deckList = [];
 	for cardId in deck.deckList:
 		for card in cardList:
 			if(card.id == cardId):
-				deckList.append(card.duplicate())
-	deck.deckList = deckList;
+				_deckList.append(card.duplicate())
+	deck.deckList = _deckList;
 	cardList = [];
 
 func loadPlayer():
