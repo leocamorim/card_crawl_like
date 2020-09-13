@@ -13,6 +13,10 @@ var collidingGroup
 var inHand = false
 var inBag = false
 
+func _ready():
+	if stats.type == Master.cardTypes.special:
+		$value.visible = false
+
 func _process(delta):
 	if dragMouse and dealer.canPlay():
 		set_z_index(10)
@@ -49,12 +53,20 @@ func mouseReleased(dragging):
 				swordOnMonster(dragging)
 			if inHand and stats.type == Master.cardTypes.shield and dragging.stats.type == Master.cardTypes.monster:
 				monsterOnShield(dragging)
+			if dragging.stats.type == Master.cardTypes.special:
+				if dragging.has_method(dragging.stats.effects):
+					dragging.call(dragging.stats.effects, self)
+				else:
+					print("Card do not have method" + str(dragging.stats.effects) + "()")
 	else:
 		set_global_position(safePosition)
 
 func useOnPlayer():
 	if stats.type == Master.cardTypes.monster:
 		dealer.monsterAttackPlayer(self)
+	elif stats.type == Master.cardTypes.special:
+		if has_method(stats.effects):
+				call(stats.effects, dealer.obj_player)
 	else:
 		set_global_position(safePosition)
 
@@ -106,7 +118,7 @@ func monsterOnShield(_monster, _shield = self):
 	dealer.removeFromTable(_monster)
 	dealer.checkBeforeDestroy(_shield)
 
-func statsChanged(_newStats):
+func statsChanged(_newStats = stats):
 	stats = _newStats
 	if stats.type != Master.cardTypes.hero:
 		$name.text = stats.name
@@ -121,3 +133,10 @@ func statsChanged(_newStats):
 			overlay.visible = true
 		else:
 			overlay.visible = false
+
+func disappear(_target):
+	if _target == dealer.obj_player:
+		dealer.reDraw()
+		dealer.shuffleDeck()
+		stats.value = 0
+		statsChanged()

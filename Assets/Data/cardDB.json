@@ -275,36 +275,36 @@
     { 
         "id": 40,
         "name": "Leech",
-        "value": 0,
+        "value": 1,
         "type": 6,
-        "effects": ["Player.life += TargetCard.value"]
+        "effects": "leech"
     },
     { 
         "id": 41,
         "name": "Sacrifice",
-        "value": 0,
+        "value": 1,
         "type": 6,
-        "effects": ["if Target.type == 5 : TargetCard.value -= (Player.maxLife - Player.life)"]
+        "effects": "sacrifice"
     },
     { 
         "id": 42,
         "name": "Potionize",
-        "value": 0,
+        "value": 1,
         "type": 6,
-        "effects": ["if Target.type != 5 : TargetCard.type = 3"]
+        "effects": "potionize"
     },
     { 
         "id": 43,
         "name": "Disappear",
-        "value": 0,
+        "value": 1,
         "type": 6,
-        "effects": ["hand = [], draw(4)"]
+        "effects": "disappear"
     },
     { 
         "id": 44,
         "name": "Flail",
-        "value": 0,
+        "value": 1,
         "type": 6,
-        "effects": ["if Target.type == 5 : hand.pop(hand.get(target), deck.push(target)"]
+        "effects": "flail"
     }
 ]

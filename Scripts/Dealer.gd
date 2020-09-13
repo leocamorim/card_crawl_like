@@ -2,11 +2,13 @@ extends Node
 
 var cardList = []
 var deck = {
-	deckList = []
+	deckList = [],
+	specialDeckList = []
 }
 var table = []
 var obj_player
 var runCoins = 0
+var runDrawed = 0
 
 onready var pre_card = preload("res://Scenes/Components/Card.tscn")
 onready var pre_player = preload("res://Scenes/Components/Player.tscn")
@@ -27,8 +29,9 @@ func _ready():
 		playTutorial()
 	else:
 		$boss.modulate.a = 1
-		loadPlayer()
 		loadDeck()
+		writeChat(str(Master.deck.name) + "\n" + str(Master.deck.desc))
+		loadPlayer()
 		shuffleDeck()
 		tableSetup()
 	$AnimationPlayer.stop(true)
@@ -210,6 +213,8 @@ func writeChat(_text):
 
 func draw():
 	var drawingCard = deck.deckList.front()
+	if runDrawed > 0 and runDrawed % 10 == 9 and deck.specialDeckList.size() > 0:
+		drawingCard = deck.specialDeckList.front()
 	var tableTable = {
 		holdable = 0,
 		potion = 0,
@@ -281,33 +286,55 @@ func draw():
 				if card.stats.type == 7:
 					tableTable.hero += 1
 
-	if (((drawingCard.type == Master.cardTypes.sword or drawingCard.type == Master.cardTypes.shield) and tableTable.holdable < 2) or deckHasOnly("holdable")) or ((drawingCard.type == Master.cardTypes.potion and tableTable.potion < 2) or deckHasOnly("potion")) or ((drawingCard.type == Master.cardTypes.coin and tableTable.coin < 2) or deckHasOnly("coin")) or ((drawingCard.type == Master.cardTypes.monster and tableTable.monster < 2) or deckHasOnly("monster")) or ((drawingCard.type == Master.cardTypes.special and tableTable.special < 2) or deckHasOnly("special")) or ((drawingCard.type == Master.cardTypes.hero and tableTable.hero < 2) or deckHasOnly("hero")):
-#	if (((drawingCard.type == Master.cardTypes.sword or drawingCard.type == Master.cardTypes.shield) and tableTable.holdable < 2)) or ((drawingCard.type == Master.cardTypes.potion and tableTable.potion < 2)) or ((drawingCard.type == Master.cardTypes.coin and tableTable.coin < 2)) or ((drawingCard.type == Master.cardTypes.monster and tableTable.monster < 2)) or ((drawingCard.type == Master.cardTypes.special and tableTable.special < 2)) or ((drawingCard.type == Master.cardTypes.hero and tableTable.hero < 2)) or deckHasOnly2(tableTable):
+	if drawingCard.type == Master.cardTypes.special:
 		table.append(drawingCard)
 		var new_card = pre_card.instance()
 		new_card.visible = false
 		new_card.stats = drawingCard
 		if Master.isTutorial:
 			new_card.canMove = false
-			if new_card.stats.value == 10:
-				new_card.stats.value = 15
-			if new_card.stats.value == 7:
-				new_card.stats.value = 15
 		var _childCounter = 0
 		for slot in $table.get_children():
 			if slot.get_child_count() == 0:
-#				if new_card.get_parent() != null:
-#					new_card.get_parent().remove_child(new_card)
 				slot.add_child(new_card)
 				_childCounter = $table.get_child_count()
-		deck.deckList.pop_front()
+		deck.specialDeckList.pop_front()
 		updateLabel()
 		new_card.get_node("AnimationPlayer").play("fadeIn")
 		Master.playAudio("draw.wav")
+		runDrawed += 1
+		print("Drawed card number " + str(runDrawed) + " and it was " + drawingCard.name)
 		return new_card
 	else:
-		shuffleDeck()
-		return draw()
+		if (((drawingCard.type == Master.cardTypes.sword or drawingCard.type == Master.cardTypes.shield) and tableTable.holdable < 2) or deckHasOnly("holdable")) or ((drawingCard.type == Master.cardTypes.potion and tableTable.potion < 2) or deckHasOnly("potion")) or ((drawingCard.type == Master.cardTypes.coin and tableTable.coin < 2) or deckHasOnly("coin")) or ((drawingCard.type == Master.cardTypes.monster and tableTable.monster < 2) or deckHasOnly("monster")) or ((drawingCard.type == Master.cardTypes.special and tableTable.special < 2) or deckHasOnly("special")) or ((drawingCard.type == Master.cardTypes.hero and tableTable.hero < 2) or deckHasOnly("hero")):
+	#	if (((drawingCard.type == Master.cardTypes.sword or drawingCard.type == Master.cardTypes.shield) and tableTable.holdable < 2)) or ((drawingCard.type == Master.cardTypes.potion and tableTable.potion < 2)) or ((drawingCard.type == Master.cardTypes.coin and tableTable.coin < 2)) or ((drawingCard.type == Master.cardTypes.monster and tableTable.monster < 2)) or ((drawingCard.type == Master.cardTypes.special and tableTable.special < 2)) or ((drawingCard.type == Master.cardTypes.hero and tableTable.hero < 2)) or deckHasOnly2(tableTable):
+			table.append(drawingCard)
+			var new_card = pre_card.instance()
+			new_card.visible = false
+			new_card.stats = drawingCard
+			if Master.isTutorial:
+				new_card.canMove = false
+				if new_card.stats.value == 10:
+					new_card.stats.value = 15
+				if new_card.stats.value == 7:
+					new_card.stats.value = 15
+			var _childCounter = 0
+			for slot in $table.get_children():
+				if slot.get_child_count() == 0:
+	#				if new_card.get_parent() != null:
+	#					new_card.get_parent().remove_child(new_card)
+					slot.add_child(new_card)
+					_childCounter = $table.get_child_count()
+			deck.deckList.pop_front()
+			updateLabel()
+			new_card.get_node("AnimationPlayer").play("fadeIn")
+			Master.playAudio("draw.wav")
+			runDrawed += 1
+			print("Drawed card number " + str(runDrawed))
+			return new_card
+		else:
+			shuffleDeck()
+			return draw()
 
 func canPlay():
 	if Master.isTutorial:
@@ -357,17 +384,17 @@ func deckHasOnly(_type):
 	return true
 
 func checkTable():
-	if deck.deckList.size() > 0 and table.size() == 1 and canPlay() and $Timer.is_stopped():
+	if (deck.deckList.size() > 0 or deck.specialDeckList.size() > 0) and table.size() <= 1 and canPlay() and $Timer.is_stopped():
 		clearTable()
 		if !Master.isTutorial:
 			$Timer.start(1)
 		else:
 			$Timer.start(1.6)
 		yield($Timer, "timeout")
-		while(deck.deckList.size() > 0 and table.size() < 4):
+		while((deck.deckList.size() > 0 or deck.specialDeckList.size() > 0) and table.size() < 4):
 			var new_card = draw()
 			yield(new_card.get_node("AnimationPlayer"), "animation_finished")
-	elif !Master.isTutorial and table.size() <= 0:
+	elif deck.deckList.size() <= 0 and deck.specialDeckList.size() <= 0 and !Master.isTutorial and table.size() <= 0:
 		if obj_player != null and obj_player.stats.life > 0:
 			Master.lastRunCoins = runCoins
 			Ss.data.coins += Master.lastRunCoins
@@ -394,17 +421,18 @@ func clearTable():
 
 func tableSetup():	
 	if table.size() <= 1:
-		while table.size() < 4 and deck.deckList.size() > 0:
+		while table.size() < 4 and (deck.deckList.size() > 0 or deck.specialDeckList.size() > 0):
 			var new_card = draw()
 			yield(new_card.get_node("AnimationPlayer"), "animation_finished")
 
 func updateLabel():
 	$Gold.text = str(runCoins) + " GOLD"
-	$DeckLabel.text = str(deck.deckList.size())
+	$DeckLabel.text = str(deck.deckList.size() + deck.specialDeckList.size())
 
 func shuffleDeck():
 	randomize()
 	deck.deckList.shuffle()
+	deck.specialDeckList.shuffle()
 
 func loadDeck(_isTutorial = false):
 	cardList = Master.readJSON("cardDB")
@@ -414,12 +442,19 @@ func loadDeck(_isTutorial = false):
 	else:
 		deck = Master.readJSON(Master.decks[0])
 	var _deckList = [];
+	var _specialDeckList = [];
 	for cardId in deck.deckList:
 		for card in cardList:
 			if(card.id == cardId):
 				_deckList.append(card.duplicate())
+	for cardId in deck.specialDeckList:
+		for card in cardList:
+			if(card.id == cardId):
+				_specialDeckList.append(card.duplicate())
 	deck.deckList = _deckList;
-	cardList = [];
+	deck.specialDeckList = _specialDeckList;
+#	cardList = [];
+	Master.deck = deck
 
 func loadPlayer():
 	var stats = {
@@ -483,7 +518,8 @@ func checkBeforeDestroy(card, clear = false):
 		anim.play("fadeOut")
 		yield(anim, "animation_finished")
 		if  card.inHand or card.inBag:
-			card.get_parent().free = true
+			if card.get_parent().has_method("free"):
+				card.get_parent().free = true
 		elif card.stats.type == Master.cardTypes.monster:
 			removeFromTable(card)
 		if clear or (card.stats.type != Master.cardTypes.monster and card.stats.type != Master.cardTypes.coin and card.stats.type != Master.cardTypes.potion):
@@ -513,6 +549,16 @@ func popTicket(text, parent = obj_player):
 	_ticket.global_position = parent.global_position
 	_ticket.setText(text)
 
+func reDraw():
+	for slot in $table.get_children():
+		for card in slot.get_children():
+			if card.is_in_group("card"):
+				deck.deckList.append(card.stats.duplicate())
+				removeFromTable(card, true)
+				var anim = card.get_node("AnimationPlayer")
+				anim.play("fadeOut")
+				updateLabel()
+				yield(anim, "animation_finished")
 
 func _on_BtClose_pressed():
 	Master.isTutorial = false

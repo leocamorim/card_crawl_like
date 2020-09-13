@@ -1,7 +1,7 @@
 extends Node
 
 var decks = ["starterDeck", "assassinsDeck", "tankDeck", "painfulDeck"]
-#var decks = ["starterDeck"]
+#var decks = ["test_deck"]
 
 var cardTypes = {
 	sword = 1,

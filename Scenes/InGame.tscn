@@ -215,7 +215,9 @@ position = Vector2( 532.574, 773.127 )
 scale = Vector2( 0.664052, 0.664052 )
 frames = SubResource( 1 )
 animation = "idle"
+frame = 1
 speed_scale = 1.5
+playing = true
 __meta__ = {
 "_edit_lock_": true
 }

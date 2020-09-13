@@ -4,5 +4,6 @@
 	"desc": "Deck used on the tutorial",
 	"deckList": [
 		36, 1, 12, 18, 31
-	]
+	],
+	"specialDeckList": []
 }
