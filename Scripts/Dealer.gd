@@ -395,7 +395,22 @@ func checkTable():
 			var new_card = draw()
 			yield(new_card.get_node("AnimationPlayer"), "animation_finished")
 	elif deck.deckList.size() <= 0 and deck.specialDeckList.size() <= 0 and !Master.isTutorial and table.size() <= 0:
-		if obj_player != null and obj_player.stats.life > 0:
+		if obj_player != null and obj_player.stats.life > 0 and !obj_player.get_node("AnimationPlayer").is_playing():
+			if $rightHand.get_child_count() > 0 and $rightHand.get_child(0).is_in_group("card") and $rightHand.get_child(0).stats.type != Master.cardTypes.special and $rightHand.get_child(0).stats.value > 0:
+				runCoins += $rightHand.get_child(0).stats.value
+				popTicket("+" + str($rightHand.get_child(0).stats.value), $rightHand.get_child(0))
+				$rightHand.get_child(0).stats.value = 0
+			if $leftHand.get_child_count() > 0 and $leftHand.get_child(0).is_in_group("card") and $leftHand.get_child(0).stats.type != Master.cardTypes.special and $leftHand.get_child(0).stats.value > 0:
+				runCoins += $leftHand.get_child(0).stats.value
+				popTicket("+" + str($leftHand.get_child(0).stats.value), $leftHand.get_child(0))
+				$leftHand.get_child(0).stats.value = 0
+			if $bag.get_child_count() > 0 and $bag.get_child(0).is_in_group("card") and $bag.get_child(0).stats.type != Master.cardTypes.special and $bag.get_child(0).stats.value > 0:
+				runCoins += $bag.get_child(0).stats.value
+				popTicket("+" + str($bag.get_child(0).stats.value), $bag.get_child(0))
+				$bag.get_child(0).stats.value = 0
+			updateLabel()
+			obj_player.get_node("AnimationPlayer").play("dead")
+			yield(obj_player.get_node("AnimationPlayer"), "animation_finished")
 			Master.lastRunCoins = runCoins
 			Ss.data.coins += Master.lastRunCoins
 			Ss.saveGame()
@@ -491,7 +506,8 @@ func monsterAttackPlayer(monster):
 	removeFromTable(monster)
 
 func sellCard(card):
-	removeFromTable(card, true)
+	if !card.inHand and !card.inBag:
+		removeFromTable(card, true)
 
 func usePotionItem(item):
 	$AnimationPlayer.play("heal")
